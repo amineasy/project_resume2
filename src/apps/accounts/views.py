@@ -1,6 +1,10 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
+from django.views import View
+from django.contrib.auth.views import LoginView
 from .forms import *
+from django.urls import reverse_lazy
 
 User = get_user_model()
 
@@ -17,3 +21,18 @@ def register(request):
         form = RegisterForm()
 
     return render(request, 'accounts/register.html', {'form': form})
+
+
+
+
+
+class Login(LoginView):
+    authentication_form_class = LoginForm
+    redirect_authenticated_user = True
+    template_name = 'accounts/login.html'
+
+    def get_success_url(self):
+        return reverse_lazy('home:home')
+
+
+
