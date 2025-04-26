@@ -8,8 +8,8 @@ from .models import *
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {"fields": ("username", "password")}),
-        (_("Personal info"), {"fields": ("first_name", "last_name", "email")}),
-        (_("confirms"), {"fields": ("email_confirmed","is_active")}),
+        (_("Personal info"), {"fields": ("first_name", "last_name", "email",'phone','address','city','')}),
+        (_("confirms"), {"fields": ("email_confirmed","phone_confirmed","is_active")}),
 
         (
             _("Permissions"),

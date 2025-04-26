@@ -25,5 +25,11 @@ class UserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     email = models.EmailField(blank=True, null=True)
     email_confirmed = models.BooleanField(default=False)
+    address = models.TextField(blank=True, null=True)
+    phone = models.TextField(blank=True, null=True)
+    phone_confirmed = models.BooleanField(default=False)
+    city = models.TextField(blank=True, null=True)
+
+
 
     REQUIRED_FIELDS = []
