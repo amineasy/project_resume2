@@ -2,6 +2,8 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from django.conf import settings
+
 
 class UserManager(BaseUserManager):
     def create_user(self, username, password, **extra_fields):
@@ -30,6 +32,19 @@ class CustomUser(AbstractUser):
     phone_confirmed = models.BooleanField(default=False)
     city = models.TextField(blank=True, null=True)
 
-
-
     REQUIRED_FIELDS = []
+
+
+
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    bio = models.TextField(blank=True, null=True)
+    profile_pic = models.ImageField(blank=True, null=True)
+
+
+    def __str__(self):
+        return f"Profile of {self.user.username}"
+
+

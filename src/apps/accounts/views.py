@@ -44,4 +44,19 @@ def logout_view(request):
 
 
 
+def user_profile(request):
+    profile = request.user.profile
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('accounts:profile')
+
+    else:
+        form = ProfileForm(instance=profile)
+
+    context = {'form': form}
+    return render(request,'accounts/profile.html',context)
+
+
 

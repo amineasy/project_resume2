@@ -8,7 +8,7 @@ from .models import *
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {"fields": ("username", "password")}),
-        (_("Personal info"), {"fields": ("first_name", "last_name", "email",'phone','address','city','')}),
+        (_("Personal info"), {"fields": ("first_name", "last_name", "email",'phone','address','city')}),
         (_("confirms"), {"fields": ("email_confirmed","phone_confirmed","is_active")}),
 
         (
@@ -35,4 +35,16 @@ class CustomUserAdmin(UserAdmin):
     )
 
 
+
+
+
+class ProfileAdmin(admin.ModelAdmin):
+    model = Profile
+    list_display = ('user',)
+
+
+
+
+
 admin.site.register(CustomUser,CustomUserAdmin)
+admin.site.register(Profile,ProfileAdmin)
