@@ -1,7 +1,7 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from django.utils.text import slugify
 from django.conf import settings
 
 
@@ -40,8 +40,18 @@ class CustomUser(AbstractUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    slug = models.SlugField(unique=True,blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     profile_pic = models.ImageField(blank=True, null=True)
+
+
+
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(f"{self.user.username}")
+        super(Profile, self).save(*args, **kwargs)
+
 
 
     def __str__(self):

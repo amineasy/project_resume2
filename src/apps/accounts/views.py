@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.contrib.auth.views import LoginView
 from .forms import *
@@ -44,7 +44,7 @@ def logout_view(request):
 
 
 
-def user_profile(request):
+def user_edit_profile(request):
     profile = request.user.profile
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=profile)
@@ -56,7 +56,15 @@ def user_profile(request):
         form = ProfileForm(instance=profile)
 
     context = {'form': form}
-    return render(request,'accounts/profile.html',context)
+    return render(request, 'accounts/edit-profile.html', context)
 
 
+
+
+
+def user_profile(request,slug=None):
+    user = request.user
+    profile = get_object_or_404(Profile,user=user,slug=slug)
+    context = {'profile': profile, 'user': user}
+    return render(request, 'accounts/profile.html', context)
 

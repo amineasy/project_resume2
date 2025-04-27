@@ -2,4 +2,8 @@
 
 {% block body %}
 <h1>home</h1>
+
+
+    <a href="{% url 'accounts:profile' slug=profile.slug %}">Go to Profile</a>
+
 {% endblock %}
