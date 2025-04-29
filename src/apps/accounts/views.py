@@ -1,10 +1,11 @@
 from django.contrib.auth import get_user_model, authenticate, login, logout
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordResetView
 from .forms import *
 from django.urls import reverse_lazy
+from django.contrib.auth import views as auth_views
 
 User = get_user_model()
 
@@ -68,3 +69,22 @@ def user_profile(request,slug=None):
     context = {'profile': profile, 'user': user}
     return render(request, 'accounts/profile.html', context)
 
+
+
+
+
+class CustomPasswordResetView(auth_views.PasswordResetView):
+    template_name = 'accounts/password_reset.html'
+    email_template_name = 'accounts/password_reset_email.html'
+    subject_template_name = 'accounts/password_reset_subject.txt'
+    success_url = '/accounts/password_reset/done/'
+
+class CustomPasswordResetDoneView(auth_views.PasswordResetDoneView):
+    template_name = 'accounts/password_reset_done.html'
+
+class CustomPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    template_name = 'accounts/password_reset_confirm.html'
+    success_url = '/accounts/reset/done/'
+
+class CustomPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+    template_name = 'accounts/password_reset_complete.html'
