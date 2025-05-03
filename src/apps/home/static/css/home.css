@@ -1,0 +1,90 @@
+/* static/css/styles.css */
+.navbar {
+    padding: 10px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    background-color: #4CAF50; /* رنگ دکمه */
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease; /* انیمیشن نرم */
+}
+
+.dropbtn:hover {
+    background-color: #45a049; /* رنگ هاور دکمه */
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #ffffff; /* پس‌زمینه سفید برای منو */
+    min-width: 200px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* سایه ملایم */
+    z-index: 1;
+    border-radius: 4px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease; /* انیمیشن باز شدن */
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.dropdown-content .dropdown-item {
+    position: relative;
+}
+
+.dropdown-content a {
+    color: #333; /* رنگ متن */
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.2s ease; /* انیمیشن هاور */
+}
+
+.dropdown-content a:hover {
+    background-color: #e0e0e0; /* پس‌زمینه خاکستری روشن برای هاور */
+}
+
+.dropdown-subcontent {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 100%;
+    background-color: #ffffff; /* پس‌زمینه سفید برای زیرمنو */
+    min-width: 200px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* سایه ملایم */
+    border-radius: 4px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease; /* انیمیشن باز شدن */
+}
+
+.dropdown-item:hover > .dropdown-subcontent {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* برای پاسخ‌گویی در موبایل */
+@media screen and (max-width: 600px) {
+    .dropdown-content {
+        min-width: 100%;
+    }
+    .dropdown-subcontent {
+        position: static;
+        box-shadow: none;
+    }
+}

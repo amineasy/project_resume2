@@ -1,0 +1,10 @@
+<div class="dropdown-item">
+    <a href="#">{{ node.title }}</a>
+    {% if node.get_children %}
+        <div class="dropdown-subcontent">
+            {% for child in node.get_children %}
+                {% include "home/category_dropdown.html" with node=child %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>

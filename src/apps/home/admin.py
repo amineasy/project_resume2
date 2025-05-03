@@ -1,10 +1,11 @@
 from django.contrib import admin
 from treebeard.forms import movenodeform_factory
+from treebeard.admin import TreeAdmin
 
 from .models import *
 
 
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(TreeAdmin):
     form = movenodeform_factory(Category)
     list_display = ('title', 'slug')
     prepopulated_fields = {'slug': ('title',)}

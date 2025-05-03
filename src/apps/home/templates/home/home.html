@@ -1,9 +1,21 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block css %}<link rel="stylesheet" href="{% static 'css/home.css' %}"> {% endblock %}
+
+{% block title %}خانه{% endblock %}
 
 {% block body %}
-<h1>home</h1>
+    <nav class="navbar">
+        <div class="dropdown">
+            <button class="dropbtn">دسته‌بندی‌ها</button>
+            <div class="dropdown-content">
+                {% for node in category %}
+                    {% include "home/category_dropdown.html" with node=node %}
+                {% endfor %}
+            </div>
+        </div>
+    </nav>
 
-
-
+    <script src="{% static 'js/home.js' %}"></script>
 
 {% endblock %}
