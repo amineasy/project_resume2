@@ -31,3 +31,4 @@ urlpatterns += [
     path('reset/done/', CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
 ]
+
