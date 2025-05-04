@@ -1,0 +1,42 @@
+/* static/css/category_detail.css */
+.category-detail h2,
+.category-detail h3 {
+    color: #4CAF50;
+}
+
+.category-detail ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.category-detail ul li {
+    margin: 10px 0;
+}
+
+.category-detail ul li a {
+    color: #333;
+}
+
+.category-detail ul li a:hover {
+    color: #4CAF50;
+}
+
+.category-detail p {
+    margin: 10px 0;
+}
+
+
+
+.category-detail .back-link {
+    display: inline-block;
+    margin-top: 20px;
+    margin-left: 20px; /* فاصله از چپ در RTL */
+    color: #4CAF50;
+    text-decoration: none;
+    padding: 5px 10px; /* پدینگ برای ظاهر بهتر */
+}
+
+.category-detail .back-link:hover {
+    text-decoration: underline;
+    color: #388E3C; /* رنگ تیره‌تر برای هاور */
+}

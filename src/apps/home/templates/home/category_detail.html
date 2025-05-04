@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/category_detail.css' %}">
+{% endblock %}
+
+{% block body %}
+<header>
+    <h1>{{ category.title }}</h1>
+</header>
+
+<section>
+    <h2>اطلاعات دسته‌بندی</h2>
+    <p><strong>عنوان:</strong> {{ category.title }}</p>
+
+    {% if category.description %}
+        <p><strong>توضیحات:</strong> {{ category.description }}</p>
+    {% endif %}
+
+    <h3>آیتم‌های مرتبط</h3>
+    {% if children or product_classes %}
+        <ul>
+            {% for child in children %}
+                <li>
+                    <a href="{% url 'home:category_detail' id=child.id slug=child.slug %}">
+                        {{ child.title }}
+                    </a>
+                </li>
+            {% endfor %}
+            {% for product_class in product_classes %}
+                <li>
+                    <a href="{% url 'home:product_class_detail' id=product_class.id slug=product_class.slug %}">
+                        {{ product_class.title }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>هیچ آیتم مرتبطی برای این دسته‌بندی وجود ندارد.</p>
+    {% endif %}
+</section>
+
+<div class="back-link">
+    <a href="{% url 'home:home' %}">بازگشت به صفحهٔ اصلی</a>
+</div>
+{% endblock %}

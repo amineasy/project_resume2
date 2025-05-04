@@ -1,0 +1,31 @@
+/* static/css/product_class_detail.css */
+.product-class-detail h2,
+.product-class-detail h3 {
+    color: #4CAF50;
+}
+
+.product-class-detail ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.product-class-detail ul li {
+    margin: 15px 0;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+
+.product-class-detail ul li p {
+    margin: 5px 0;
+    color: #555;
+}
+
+.product-class-detail p {
+    margin: 10px 0;
+}
+
+.product-class-detail .back-link {
+    display: inline-block;
+    margin-top: 20px;
+}

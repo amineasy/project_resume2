@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/product_class_detail.css' %}">
+{% endblock %}
+
+{% block body %}
+<header>
+    <h1>{{ product_class.title }}</h1>
+</header>
+
+<section>
+    <h2>جزئیات کلاس محصول</h2>
+    <p><strong>عنوان:</strong> {{ product_class.title }}</p>
+
+    {% if product_class.description %}
+        <p><strong>توضیحات:</strong> {{ product_class.description }}</p>
+    {% endif %}
+
+    <h3>محصولات</h3>
+    {% if products %}
+        <ul>
+            {% for product in products %}
+                <li>
+                    <strong>{{ product.title }}</strong>
+                    <br>
+                    قیمت: {{ product.total_price|default:product.price }} تومان<br>
+                    موجودی: {{ product.quantity }}
+                    {% if product.description %}
+                        <p>{{ product.description }}</p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>در حال حاضر، محصولی در این کلاس محصول ثبت نشده است.</p>
+    {% endif %}
+</section>
+
+<div class="back-links">
+    <a href="{% url 'home:category_detail' id=product_class.category.id slug=product_class.category.slug %}">بازگشت به دسته‌بندی</a> |
+    <a href="{% url 'home:home' %}">بازگشت به صفحهٔ اصلی</a>
+</div>
+{% endblock %}

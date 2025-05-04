@@ -1,5 +1,5 @@
 <div class="dropdown-item">
-    <a href="#">{{ node.title }}</a>
+    <a href="{% url 'home:category_detail' id=node.id slug=node.slug %}">{{ node.title }}</a>
     {% if node.get_children %}
         <div class="dropdown-subcontent">
             {% for child in node.get_children %}

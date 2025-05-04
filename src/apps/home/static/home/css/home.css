@@ -1,5 +1,47 @@
 /* static/css/styles.css */
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+section {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+section h2, section h3 {
+    color: #4CAF50;
+}
+
+section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+section ul li {
+    margin: 10px 0;
+}
+
+section ul li a {
+    color: #333;
+    text-decoration: none;
+}
+
+section ul li a:hover {
+    color: #4CAF50;
+    text-decoration: underline;
+}
+
+/* استایل‌های قبلی منوی دراپ‌داون */
 .navbar {
+    background-color: #333;
     padding: 10px;
 }
 
@@ -9,31 +51,31 @@
 }
 
 .dropbtn {
-    background-color: #4CAF50; /* رنگ دکمه */
+    background-color: #4CAF50;
     color: white;
     padding: 10px 20px;
     font-size: 16px;
     border: none;
     cursor: pointer;
     border-radius: 4px;
-    transition: background-color 0.3s ease; /* انیمیشن نرم */
+    transition: background-color 0.3s ease;
 }
 
 .dropbtn:hover {
-    background-color: #45a049; /* رنگ هاور دکمه */
+    background-color: #45a049;
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #ffffff; /* پس‌زمینه سفید برای منو */
+    background-color: #ffffff;
     min-width: 200px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* سایه ملایم */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1;
     border-radius: 4px;
     opacity: 0;
     transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease; /* انیمیشن باز شدن */
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .dropdown:hover .dropdown-content {
@@ -47,15 +89,15 @@
 }
 
 .dropdown-content a {
-    color: #333; /* رنگ متن */
+    color: #333;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
-    transition: background-color 0.2s ease; /* انیمیشن هاور */
+    transition: background-color 0.2s ease;
 }
 
 .dropdown-content a:hover {
-    background-color: #e0e0e0; /* پس‌زمینه خاکستری روشن برای هاور */
+    background-color: #e0e0e0;
 }
 
 .dropdown-subcontent {
@@ -63,13 +105,13 @@
     position: absolute;
     top: 0;
     right: 100%;
-    background-color: #ffffff; /* پس‌زمینه سفید برای زیرمنو */
+    background-color: #ffffff;
     min-width: 200px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* سایه ملایم */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     opacity: 0;
     transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease; /* انیمیشن باز شدن */
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .dropdown-item:hover > .dropdown-subcontent {
@@ -78,7 +120,6 @@
     transform: translateY(0);
 }
 
-/* برای پاسخ‌گویی در موبایل */
 @media screen and (max-width: 600px) {
     .dropdown-content {
         min-width: 100%;

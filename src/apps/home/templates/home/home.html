@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block css %}<link rel="stylesheet" href="{% static 'css/home.css' %}"> {% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/home.css' %}">
+
+{% endblock %}
 
 {% block title %}خانه{% endblock %}
 
@@ -16,6 +20,6 @@
         </div>
     </nav>
 
-    <script src="{% static 'js/home.js' %}"></script>
+    <script src="{% static 'home/js/home.js' %}"></script>
 
 {% endblock %}
