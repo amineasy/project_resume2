@@ -62,7 +62,7 @@ class ProductAttribute(models.Model):
     color = models.ForeignKey('ProductColor', on_delete=models.CASCADE,blank=True, null=True)
     size = models.ForeignKey('ProductSize', on_delete=models.CASCADE,blank=True, null=True)
     quantity = models.PositiveIntegerField(default=1)
-    price = models.IntegerField(blank=True)
+    price = models.IntegerField(blank=True,null=True)
     discount_price = models.IntegerField(blank=True, null=True)
     total_price = models.IntegerField(blank=True, null=True)
 

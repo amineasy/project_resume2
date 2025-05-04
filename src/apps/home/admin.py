@@ -3,6 +3,7 @@ from treebeard.forms import movenodeform_factory
 from treebeard.admin import TreeAdmin
 
 from .models import *
+from ..media.admin import CategoryImageInline, ProductImageInline, ProductClassImageInline
 
 
 class CategoryAdmin(TreeAdmin):
@@ -10,12 +11,14 @@ class CategoryAdmin(TreeAdmin):
     list_display = ('title', 'slug')
     prepopulated_fields = {'slug': ('title',)}
     search_fields = ('title',)
+    inlines = [CategoryImageInline]
 
 
 
 class ProductClassAdmin(admin.ModelAdmin):
     list_display = ('title', 'slug')
     prepopulated_fields = {'slug': ('title',)}
+    inlines = [ProductClassImageInline]
 
 
 
@@ -32,7 +35,8 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('title',)
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ('total_price',)
-    inlines = [ProductAttributeInline]
+    inlines = [ProductAttributeInline,ProductImageInline]
+
 
 
 

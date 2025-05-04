@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "treebeard",
     'apps.home',
     'apps.accounts',
+    'apps.media',
 ]
 
 MIDDLEWARE = [
@@ -142,6 +143,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
 from decouple import config
+
 
 
 
