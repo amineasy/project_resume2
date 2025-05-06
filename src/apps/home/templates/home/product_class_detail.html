@@ -24,10 +24,9 @@
         <ul>
             {% for product in products %}
                 <li>
-                    <strong>{{ product.title }}</strong>
+                    <a href="{% url 'home:product_detail' product.id product.slug %}"><strong>{{ product.title }}</strong></a>
                     <br>
-                    قیمت: {{ product.total_price|default:product.price }} تومان<br>
-                    موجودی: {{ product.quantity }}
+
                     {% if product.description %}
                         <p>{{ product.description }}</p>
                     {% endif %}

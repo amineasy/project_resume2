@@ -38,3 +38,19 @@ def product_class_detail(request, id, slug=None):
         'products': products,
     }
     return render(request, 'home/product_class_detail.html', context)
+
+
+
+
+
+
+
+
+
+
+def product_detail(request, id, slug=None):
+
+    product = get_object_or_404(Product, id=id, slug=slug)
+    context = {'product': product}
+
+    return render(request,'home/product_detail.html',context)

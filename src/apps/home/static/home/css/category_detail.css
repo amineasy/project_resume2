@@ -1,4 +1,4 @@
-/* static/css/category_detail.css */
+/* static/home/css/category_detail.css */
 .category-detail h2,
 .category-detail h3 {
     color: #4CAF50;
@@ -25,18 +25,78 @@
     margin: 10px 0;
 }
 
-
-
 .category-detail .back-link {
     display: inline-block;
     margin-top: 20px;
     margin-left: 20px; /* فاصله از چپ در RTL */
     color: #4CAF50;
     text-decoration: none;
-    padding: 5px 10px; /* پدینگ برای ظاهر بهتر */
+    padding: 5px 10px;
 }
 
 .category-detail .back-link:hover {
     text-decoration: underline;
-    color: #388E3C; /* رنگ تیره‌تر برای هاور */
+    color: #388E3C;
+}
+
+/* محدود کردن عرض section برای کنترل اندازه محتوا */
+.category-detail section {
+    max-width: 600px; /* عرض محدود برای کل بخش */
+    margin: 0 auto; /* وسط‌چین */
+    text-align: right; /* برای RTL */
+}
+
+.category-image {
+    width: 100%; /* عرض نسبت به والد */
+    max-width: 300px; /* اندازه‌ای که گفتی درست کار می‌کنه */
+    height: auto; /* حفظ نسبت تصویر */
+    border-radius: 16px; /* گوشه‌های گرد */
+    margin: 15px auto; /* فاصله و وسط‌چین */
+    border: 2px solid transparent;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2),
+                0 12px 24px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    display: block;
+}
+
+.category-image:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3),
+                0 16px 32px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(145deg, #ffffff, #d9e6ff);
+    filter: brightness(1.05) contrast(1.05);
+}
+
+.category-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: 0.6s;
+}
+
+.category-image:hover::before {
+    left: 100%;
+}
+
+/* تنظیمات برای صفحه‌های کوچیک‌تر (موبایل) */
+@media (max-width: 768px) {
+    .category-image {
+        max-width: 200px; /* کوچیک‌تر برای موبایل */
+        margin: 10px auto;
+    }
+    .category-detail section {
+        max-width: 90%; /* عرض نسبی برای موبایل */
+    }
 }

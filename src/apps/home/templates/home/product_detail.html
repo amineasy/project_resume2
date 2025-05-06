@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/product_detail.css' %}">
+{% endblock %}
+
+{% block body %}
+<div class="product-detail-container">
+    <h1 class="product-title">{{ product.title }}</h1>
+
+    <div class="product-details">
+        <div class="product-image-gallery">
+            {% if product.productimage_set.all %}
+                <!-- تصویر اصلی -->
+                {% with first_image=product.productimage_set.first %}
+                    <img src="{% if first_image.image %}{{ first_image.image.url }}{% else %}https://via.placeholder.com/400{% endif %}" alt="{{ product.title }}" class="main-image" id="main-image">
+                {% endwith %}
+                <!-- گالری تصاویر کوچک -->
+                {% if product.productimage_set.count > 1 %}
+                    <div class="thumbnail-gallery">
+                        {% for image in product.productimage_set.all %}
+                            {% if image.image %}
+                                <img src="{{ image.image.url }}" alt="{{ product.title }} - تصویر {{ forloop.counter }}" class="thumbnail" data-large="{{ image.image.url }}">
+                            {% else %}
+                                <img src="https://via.placeholder.com/100" alt="{{ product.title }} - بدون تصویر" class="thumbnail" data-large="https://via.placeholder.com/400">
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% else %}
+                <!-- تصویر پیش‌فرض -->
+                <img src="https://via.placeholder.com/400" alt="{{ product.title }} - بدون تصویر" class="main-image">
+            {% endif %}
+        </div>
+
+        <div class="product-info">
+            <div class="price-section">
+                {% if product.discount_price %}
+                    <span class="original-price">قیمت اصلی: {{ product.price }} تومان</span>
+                    <span class="discount-price">قیمت با تخفیف: {{ product.total_price }} تومان</span>
+                {% else %}
+                    <span class="final-price">قیمت: {{ product.price }} تومان</span>
+                {% endif %}
+            </div>
+            <p class="stock-status">
+                {% if product.quantity > 0 %}
+                    موجود در انبار: {{ product.quantity }} عدد
+                {% else %}
+                    ناموجود
+                {% endif %}
+            </p>
+            <p class="description">{{ product.description|default:"توضیحاتی موجود نیست." }}</p>
+            <div class="action-buttons">
+                <a href="#" class="btn-add-to-cart">افزودن به سبد خرید</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // جاوااسکریپت برای تعویض تصویر اصلی با کلیک روی thumbnails
+    document.querySelectorAll('.thumbnail').forEach(thumb => {
+        thumb.addEventListener('click', () => {
+            const mainImage = document.getElementById('main-image');
+            mainImage.src = thumb.dataset.large;
+            mainImage.classList.add('fade');
+            setTimeout(() => mainImage.classList.remove('fade'), 300);
+        });
+    });
+</script>
+{% endblock %}

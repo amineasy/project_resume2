@@ -19,6 +19,18 @@
         <p><strong>توضیحات:</strong> {{ category.description }}</p>
     {% endif %}
 
+    <!-- نمایش تصویر دسته‌بندی -->
+    {% if category.categoryimage_set.all %}
+        <h3>تصویر دسته‌بندی</h3>
+        {% for category_image in category.categoryimage_set.all %}
+            {% if category_image.image %}
+                <img src="{{ category_image.image.url }}" alt="{{ category.title }}" class="category-image" style="max-width: 300px; height: auto;">
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <p>تصویری برای این دسته‌بندی وجود ندارد.</p>
+    {% endif %}
+
     <h3>آیتم‌های مرتبط</h3>
     {% if children or product_classes %}
         <ul>
