@@ -1,19 +1,18 @@
-from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.shortcuts import render, get_object_or_404, redirect
 from apps.accounts.models import Profile
-from apps.home.models import Category, ProductClass, Product
+from apps.home.models import Category, ProductClass, Product, Favourite
 
+User = get_user_model()
 
 
 def home(request):
-
     category = Category.get_root_nodes()
 
     context = {'category': category}
 
-    return render(request,'home/home.html',context)
-
-
-
+    return render(request, 'home/home.html', context)
 
 
 def category_detail(request, id, slug=None):
@@ -28,8 +27,6 @@ def category_detail(request, id, slug=None):
     return render(request, 'home/category_detail.html', context)
 
 
-
-
 def product_class_detail(request, id, slug=None):
     product_class = get_object_or_404(ProductClass, id=id, slug=slug)
     products = Product.objects.filter(product_class=product_class)
@@ -40,17 +37,30 @@ def product_class_detail(request, id, slug=None):
     return render(request, 'home/product_class_detail.html', context)
 
 
-
-
-
-
-
-
-
-
 def product_detail(request, id, slug=None):
-
     product = get_object_or_404(Product, id=id, slug=slug)
-    context = {'product': product}
+    is_favourite = False
+    if request.user.is_authenticated:
+        is_favourite = Favourite.objects.filter(user=request.user, product=product).exists()
+    context = {
+        'product': product,
+        'is_favourite': is_favourite
+    }
+    return render(request, 'home/product_detail.html', context)
 
-    return render(request,'home/product_detail.html',context)
+
+def product_favourite(request, product_id):
+    http_referer = request.META.get('HTTP_REFERER', 'home:home')  # پیش‌فرض: صفحه اصلی
+    if not request.user.is_authenticated:
+        return redirect('accounts:login')
+
+    product = get_object_or_404(Product, id=product_id)
+    favourite, created = Favourite.objects.get_or_create(user=request.user, product=product)
+
+    if created:
+        messages.success(request, f'{product.title} به علاقه‌مندی‌ها اضافه شد.')
+    else:
+        favourite.delete()
+        messages.success(request, f'{product.title} از علاقه‌مندی‌ها حذف شد.')
+
+    return redirect(http_referer)

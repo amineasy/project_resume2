@@ -4,6 +4,7 @@ from treebeard.admin import TreeAdmin
 
 from .models import *
 from ..media.admin import CategoryImageInline, ProductImageInline, ProductClassImageInline
+from ..media.models import ProductImage
 
 
 class CategoryAdmin(TreeAdmin):
@@ -57,3 +58,4 @@ admin.site.register(ProductClass, ProductClassAdmin)
 admin.site.register(ProductColor, ProductColorAdmin)
 admin.site.register(ProductSize, ProductSizeAdmin)
 admin.site.register(ProductAttribute)
+admin.site.register(Favourite)

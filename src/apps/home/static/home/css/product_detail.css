@@ -5,7 +5,13 @@
     box-sizing: border-box;
 }
 
-/* متغیرهای CSS برای هماهنگی */
+button {
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+/* متغیرهای CSS */
 :root {
     --primary-color: #007bff;
     --success-color: #28a745;
@@ -51,6 +57,7 @@ body {
     flex-direction: row-reverse;
     gap: 40px;
     flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 /* گالری تصاویر */
@@ -66,7 +73,7 @@ body {
     height: auto;
     object-fit: contain;
     border-radius: 12px;
-    box-shadow: var or(--shadow);
+    box-shadow: var(--shadow);
     transition: opacity 0.3s ease;
 }
 
@@ -113,6 +120,7 @@ body {
     flex: 1;
     min-width: 300px;
     padding: 20px;
+    text-align: right;
 }
 
 .price-section {
@@ -148,6 +156,10 @@ body {
 .action-buttons {
     display: flex;
     gap: 15px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    text-align: right;
 }
 
 .btn-add-to-cart {
@@ -167,11 +179,57 @@ body {
     transform: translateY(-2px);
 }
 
+/* استایل فرم و دکمه لایک */
+.favourite-form {
+    display: inline-block;
+    margin: 0;
+}
+
+.action-buttons .favourite-form .btn-favourite {
+    display: flex;
+    align-items: center;
+    padding: 12px 30px;
+    color: white !important;
+    text-decoration: none !important;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 500;
+    transition: background-color 0.3s, transform 0.2s;
+    cursor: pointer;
+    border: none !important;
+    font-family: var(--font-family);
+    background-color: var(--primary-color);
+}
+
+.action-buttons .favourite-form .btn-favourite.btn-favourite-add {
+    background-color: var(--primary-color) !important;
+    border: 1px solid var(--primary-color) !important;
+}
+
+.action-buttons .favourite-form .btn-favourite.btn-favourite-add:hover {
+    background-color: #0056b3 !important;
+    transform: translateY(-2px);
+}
+
+.action-buttons .favourite-form .btn-favourite.btn-favourite-remove {
+    background-color: var(--discount-color) !important;
+    border: 1px solid var(--discount-color) !important;
+}
+
+.action-buttons .favourite-form .btn-favourite.btn-favourite-remove:hover {
+    background-color: #c82333 !important;
+    transform: translateY(-2px);
+}
+
+.btn-favourite i {
+    margin-left: 8px;
+}
+
 /* پاسخ‌گویی برای موبایل */
 @media (max-width: 768px) {
     .product-details {
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
     }
 
     .product-image-gallery {
@@ -191,7 +249,12 @@ body {
         padding: 10px;
     }
 
-    .btn-add-to-cart {
+    .action-buttons {
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .btn-add-to-cart, .btn-favourite {
         padding: 10px 20px;
         font-size: 1em;
     }

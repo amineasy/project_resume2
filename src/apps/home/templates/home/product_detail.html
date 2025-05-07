@@ -3,7 +3,7 @@
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'home/css/product_detail.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/product_detail.css' %}?v=3">
 {% endblock %}
 
 {% block body %}
@@ -54,6 +54,18 @@
             <p class="description">{{ product.description|default:"توضیحاتی موجود نیست." }}</p>
             <div class="action-buttons">
                 <a href="#" class="btn-add-to-cart">افزودن به سبد خرید</a>
+                <!-- دکمه لایک/حذف لایک -->
+                <form action="{% url 'home:product_favourite' product_id=product.id %}" method="post" class="favourite-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-favourite {% if is_favourite %}btn-favourite-remove{% else %}btn-favourite-add{% endif %}">
+                        <i class="fas {% if is_favourite %}fa-heart-broken{% else %}fa-heart{% endif %}"></i>
+                        {% if is_favourite %}
+                            حذف از علاقه‌مندی‌ها
+                        {% else %}
+                            افزودن به علاقه‌مندی‌ها
+                        {% endif %}
+                    </button>
+                </form>
             </div>
         </div>
     </div>
