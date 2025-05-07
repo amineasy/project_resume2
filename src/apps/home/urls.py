@@ -11,4 +11,4 @@ urlpatterns = [
     path('product-class/<int:id>/<slug:slug>/', views.product_class_detail, name='product_class_detail'),
     path('product-detail/<int:id>/<slug:slug>', views.product_detail, name='product_detail'),
     path('product-favourite/<int:product_id>/', views.product_favourite, name='product_favourite'),
-]
+    path('favourites/', views.product_favourite_list, name='product_favourite_list'),]

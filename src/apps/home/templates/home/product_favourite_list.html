@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/favourite_list.css' %}?v=1">
+{% endblock %}
+
+{% block body %}
+<div class="favourite-container">
+    <h1 class="favourite-title">علاقه‌مندی‌های من</h1>
+
+
+
+    {% if favourites %}
+        <div class="favourites-grid">
+            {% for favourite in favourites %}
+                <div class="favourite-card">
+                    <div class="favourite-image">
+                        {% with first_image=favourite.product.productimage_set.first %}
+                            <img src="{% if first_image.image %}{{ first_image.image.url }}{% else %}https://via.placeholder.com/200{% endif %}" alt="{{ favourite.product.title }}">
+                        {% endwith %}
+                    </div>
+                    <div class="favourite-details">
+                        <h3 class="favourite-product-title">{{ favourite.product.title }}</h3>
+                        <p class="favourite-price">
+                            {% if favourite.product.discount_price %}
+                                <span class="original-price">قیمت اصلی: {{ favourite.product.price }} تومان</span>
+                                <span class="discount-price">قیمت با تخفیف: {{ favourite.product.total_price }} تومان</span>
+                            {% else %}
+                                <span class="final-price">قیمت: {{ favourite.product.price }} تومان</span>
+                            {% endif %}
+                        </p>
+                        <div class="favourite-actions">
+                            <a href="{% url 'home:product_detail' id=favourite.product.id slug=favourite.product.slug %}" class="btn-view-product">مشاهده محصول</a>
+                            <form action="{% url 'home:product_favourite' product_id=favourite.product.id %}" method="post" class="favourite-form">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-favourite btn-favourite-remove">
+                                    <i class="fas fa-heart-broken"></i> حذف
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="no-favourites">هیچ محصولی در علاقه‌مندی‌های شما وجود ندارد.</p>
+    {% endif %}
+</div>
+{% endblock %}

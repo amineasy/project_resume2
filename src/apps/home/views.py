@@ -64,3 +64,14 @@ def product_favourite(request, product_id):
         messages.success(request, f'{product.title} از علاقه‌مندی‌ها حذف شد.')
 
     return redirect(http_referer)
+
+
+
+
+
+def product_favourite_list(request):
+    if not request.user.is_authenticated:
+        return redirect('accounts:login')
+    favourites = Favourite.objects.filter(user=request.user)
+    context = {'favourites': favourites}
+    return render(request, 'home/product_favourite_list.html', context)
