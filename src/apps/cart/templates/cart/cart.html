@@ -53,37 +53,35 @@
             </p>
             <p class="description">{{ product.description|default:"توضیحاتی موجود نیست." }}</p>
 
-            <!-- فرم افزودن به سبد خرید -->
+            <!-- انتخاب واریانت‌ها (رنگ و اندازه) -->
             <div class="variant-selection">
                 <form method="post" action="{% url 'cart:add_to_cart' product_id=product.id %}" class="add-to-cart-form">
                     {% csrf_token %}
-                    <!-- نمایش فیلد رنگ اگر وجود داشته باشد -->
-                    {% if has_colors %}
+                    {% if product.productattribute_set.all %}
+                        <!-- انتخاب رنگ -->
                         <div class="variant-field">
                             <label for="color">رنگ:</label>
-                            <select name="color_id" id="color" {% if has_colors %}required{% endif %}>
+                            <select name="color_id" id="color" required>
                                 <option value="">انتخاب کنید</option>
-                                {% for color in colors %}
-                                    <option value="{{ color.color__id }}">{{ color.color__color }}</option>
+                                {% for attr in product.productattribute_set.distinct.all %}
+                                    {% if attr.color %}
+                                        <option value="{{ attr.color.id }}">{{ attr.color.color }}</option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
                         </div>
-                    {% endif %}
-                    <!-- نمایش فیلد اندازه اگر وجود داشته باشد -->
-                    {% if has_sizes %}
+                        <!-- انتخاب اندازه -->
                         <div class="variant-field">
                             <label for="size">اندازه:</label>
-                            <select name="size_id" id="size" {% if has_sizes %}required{% endif %}>
+                            <select name="size_id" id="size" required>
                                 <option value="">انتخاب کنید</option>
-                                {% for size in sizes %}
-                                    <option value="{{ size.size__id }}">{{ size.size__size }}</option>
+                                {% for attr in product.productattribute_set.distinct.all %}
+                                    {% if attr.size %}
+                                        <option value="{{ attr.size.id }}">{{ attr.size.size }}</option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
                         </div>
-                    {% endif %}
-                    <!-- پیام اگر هیچ واریانتی وجود ندارد -->
-                    {% if not has_colors and not has_sizes %}
-                        <p class="no-variants">این محصول واریانت (رنگ یا اندازه) ندارد.</p>
                     {% endif %}
                     <!-- تعداد -->
                     <div class="quantity-field">

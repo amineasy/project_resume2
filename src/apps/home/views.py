@@ -42,9 +42,30 @@ def product_detail(request, id, slug=None):
     is_favourite = False
     if request.user.is_authenticated:
         is_favourite = Favourite.objects.filter(user=request.user, product=product).exists()
+
+    # بررسی وجود واریانت‌های رنگ و اندازه
+    has_colors = product.productattribute_set.filter(color__isnull=False).exists()
+    has_sizes = product.productattribute_set.filter(size__isnull=False).exists()
+
+    # دریافت لیست رنگ‌ها و اندازه‌ها (در صورت وجود)
+    colors = (
+        product.productattribute_set.filter(color__isnull=False)
+        .values('color__id', 'color__color')
+        .distinct()
+    ) if has_colors else []
+    sizes = (
+        product.productattribute_set.filter(size__isnull=False)
+        .values('size__id', 'size__size')
+        .distinct()
+    ) if has_sizes else []
+
     context = {
         'product': product,
-        'is_favourite': is_favourite
+        'is_favourite': is_favourite,
+        'has_colors': has_colors,
+        'has_sizes': has_sizes,
+        'colors': colors,
+        'sizes': sizes,
     }
     return render(request, 'home/product_detail.html', context)
 
