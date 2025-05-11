@@ -1,50 +1,301 @@
-/* static/home/css/product_detail.css */
-
-/* ... استایل‌های قبلی ... */
-
-.no-variants {
-    color: #777;
-    font-style: italic;
-    margin-bottom: 15px;
+/* متغیرهای CSS برای سفارشی‌سازی آسان */
+:root {
+    --primary-color: #007bff; /* آبی جذاب */
+    --secondary-color: #6c757d; /* خاکستری ملایم */
+    --accent-color: #ff4757; /* قرمز برای جلب توجه */
+    --background-color: #ffffff; /* پس‌زمینه سفید */
+    --text-color: #2d3436; /* متن تیره */
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* استایل کلی صفحه */
+.product-detail-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+/* عنوان محصول */
+.product-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 30px;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+/* چیدمان اصلی محصول */
+.product-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+/* گالری تصاویر */
+.product-image-gallery {
+    flex: 1;
+    min-width: 320px;
+    max-width: 500px;
+    position: relative;
+}
+
+/* تصویر اصلی */
+.main-image {
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.main-image:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* گالری تصاویر کوچک */
+.thumbnail-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.thumbnail {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: var(--transition);
+}
+
+.thumbnail:hover,
+.thumbnail.active {
+    border-color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+/* بخش اطلاعات محصول */
+.product-info {
+    flex: 1;
+    min-width: 320px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: var(--border-radius);
+}
+
+/* بخش قیمت */
+.price-section {
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.original-price {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+    text-decoration: line-through;
+}
+
+.discount-price,
+.final-price {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.no-variants {
+    font-size: 1rem;
+    color: var(--secondary-color);
+}
+
+/* وضعیت موجودی */
+.stock-status {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+/* توضیحات محصول */
+.description {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-color);
+    margin-bottom: 25px;
+}
+
+/* فرم انتخاب واریانت‌ها */
 .variant-selection {
+    margin-bottom: 25px;
+}
+
+.variant-field,
+.quantity-field {
     margin-bottom: 20px;
 }
 
-.variant-field, .quantity-field {
-    margin-bottom: 15px;
-}
-
-.variant-field label, .quantity-field label {
+.variant-field label,
+.quantity-field label {
     display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-color);
 }
 
-.variant-field select, .quantity-field input {
+.variant-field select,
+.quantity-field input {
     width: 100%;
-    max-width: 200px;
-    padding: 8px;
+    max-width: 300px;
+    padding: 12px;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: border-color var(--transition), box-shadow var(--transition);
 }
 
-.add-to-cart-form button {
-    padding: 10px 20px;
-    background-color: #007bff;
+.variant-field select:focus,
+.quantity-field input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    outline: none;
+}
+
+.quantity-field input {
+    max-width: 120px;
+}
+
+/* دکمه افزودن به سبد خرید */
+.btn-add-to-cart {
+    display: inline-block;
+    padding: 14px 30px;
+    background-color: var(--primary-color);
     color: white;
+    font-size: 1rem;
+    font-weight: 600;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: var(--transition);
 }
 
-.add-to-cart-form button:hover {
+.btn-add-to-cart:hover {
     background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.add-to-cart-form button:disabled {
+.btn-add-to-cart:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+    transform: none;
+}
+
+/* پیام بدون واریانت */
+.no-variants {
+    font-size: 0.95rem;
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+}
+
+/* دکمه علاقه‌مندی */
+.action-buttons {
+    margin-top: 20px;
+}
+
+.btn-favourite {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background-color: transparent;
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-favourite:hover {
+    background-color: var(--accent-color);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-favourite i {
+    font-size: 1.2rem;
+}
+
+/* افکت محو شدن برای تعویض تصویر */
+.fade {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* استایل‌های ریسپانسیو */
+@media (max-width: 768px) {
+    .product-details {
+        flex-direction: column;
+    }
+
+    .product-image-gallery,
+    .product-info {
+        max-width: 100%;
+    }
+
+    .product-title {
+        font-size: 1.8rem;
+    }
+
+    .main-image {
+        max-width: 100%;
+    }
+
+    .thumbnail {
+        width: 70px;
+        height: 70px;
+    }
+
+    .discount-price,
+    .final-price {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-detail-container {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .product-title {
+        font-size: 1.5rem;
+    }
+
+    .btn-add-to-cart,
+    .btn-favourite {
+        width: 100%;
+        text-align: center;
+    }
+
+    .variant-field select,
+    .quantity-field input {
+        max-width: 100%;
+    }
 }

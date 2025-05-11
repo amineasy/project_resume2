@@ -60,7 +60,7 @@ class Product(models.Model):
 
 
 class ProductAttribute(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name='attributes_related')
     color = models.ForeignKey('ProductColor', on_delete=models.CASCADE,blank=True, null=True)
     size = models.ForeignKey('ProductSize', on_delete=models.CASCADE,blank=True, null=True)
     quantity = models.PositiveIntegerField(default=1)

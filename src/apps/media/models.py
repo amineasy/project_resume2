@@ -15,17 +15,17 @@ class Image(models.Model):
 
 class CategoryImage(Image):
     image = models.ImageField(upload_to='category-image',blank=True,null=True)
-    image_category = models.ForeignKey('home.Category',on_delete=models.CASCADE,blank=True,null=True)
+    image_category = models.ForeignKey('home.Category',on_delete=models.CASCADE,blank=True,null=True,related_name='images')
 
 
 
 
 class ProductClassImage(Image):
     image = models.ImageField(upload_to='product-image',blank=True,null=True)
-    image_product_class = models.ForeignKey('home.ProductClass',on_delete=models.CASCADE,blank=True,null=True)
+    image_product_class = models.ForeignKey('home.ProductClass',on_delete=models.CASCADE,blank=True,null=True,related_name='images')
 
 
 
 class ProductImage(Image):
     image = models.ImageField(upload_to='product-image',blank=True,null=True)
-    image_product = models.ForeignKey('home.Product',on_delete=models.CASCADE,blank=True,null=True)
+    image_product = models.ForeignKey('home.Product',on_delete=models.CASCADE,blank=True,null=True,related_name='images')

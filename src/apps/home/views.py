@@ -1,3 +1,5 @@
+import json
+
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, get_object_or_404, redirect
@@ -37,37 +39,64 @@ def product_class_detail(request, id, slug=None):
     return render(request, 'home/product_class_detail.html', context)
 
 
+
+
+
 def product_detail(request, id, slug=None):
     product = get_object_or_404(Product, id=id, slug=slug)
+    user = request.user
     is_favourite = False
-    if request.user.is_authenticated:
-        is_favourite = Favourite.objects.filter(user=request.user, product=product).exists()
 
-    # بررسی وجود واریانت‌های رنگ و اندازه
-    has_colors = product.productattribute_set.filter(color__isnull=False).exists()
-    has_sizes = product.productattribute_set.filter(size__isnull=False).exists()
+    if user.is_authenticated:
+        is_favourite = Favourite.objects.filter(user=user, product=product).exists()
 
-    # دریافت لیست رنگ‌ها و اندازه‌ها (در صورت وجود)
-    colors = (
-        product.productattribute_set.filter(color__isnull=False)
-        .values('color__id', 'color__color')
+    # بهینه‌سازی کوئری با select_related
+    attributes = product.attributes_related.select_related('color', 'size').all()
+
+
+
+    # دریافت لیست رنگ‌ها و اندازه‌ها
+    colors = attributes.filter(color__isnull=False)\
+        .values('color__id', 'color__color')\
         .distinct()
-    ) if has_colors else []
-    sizes = (
-        product.productattribute_set.filter(size__isnull=False)
-        .values('size__id', 'size__size')
+
+    sizes = attributes.filter(size__isnull=False)\
+        .values('size__id', 'size__size')\
         .distinct()
-    ) if has_sizes else []
+
+    # تولید داده‌های واریانت با مدیریت None
+    variant_data = [
+        {
+            'color_id': attr.color.id if attr.color else None,
+            'size_id': attr.size.id if attr.size else None,
+            'price': attr.get_price() or 0,
+            'discount_price': attr.get_discount_price() or None,
+            'total_price': attr.get_total_price() or 0
+        }
+        for attr in attributes
+    ]
+
+    # واریانت پیش‌فرض
+    default_attribute = attributes.first() if attributes.exists() else None
+
+
 
     context = {
         'product': product,
         'is_favourite': is_favourite,
-        'has_colors': has_colors,
-        'has_sizes': has_sizes,
         'colors': colors,
         'sizes': sizes,
-    }
+        'has_colors': colors.exists(),
+        'has_sizes': sizes.exists(),
+        'default_attribute': default_attribute,
+        'variant_data': json.dumps(variant_data),
+        }
     return render(request, 'home/product_detail.html', context)
+
+
+
+
+
 
 
 def product_favourite(request, product_id):

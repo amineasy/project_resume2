@@ -2,128 +2,101 @@
 {% load static %}
 
 {% block css %}
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'home/css/product_detail.css' %}?v=3">
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="{% static 'home/css/product_detail.css' %}">
 {% endblock %}
 
+{% block title %}{{ product.title }}{% endblock %}
+
 {% block body %}
-<div class="product-detail-container">
-    <h1 class="product-title">{{ product.title }}</h1>
+<div class="product-detail">
 
-    <div class="product-details">
-        <div class="product-image-gallery">
-            {% if product.productimage_set.all %}
-                <!-- تصویر اصلی -->
-                {% with first_image=product.productimage_set.first %}
-                    <img src="{% if first_image.image %}{{ first_image.image.url }}{% else %}https://via.placeholder.com/400{% endif %}" alt="{{ product.title }}" class="main-image" id="main-image">
-                {% endwith %}
-                <!-- گالری تصاویر کوچک -->
-                {% if product.productimage_set.count > 1 %}
-                    <div class="thumbnail-gallery">
-                        {% for image in product.productimage_set.all %}
-                            {% if image.image %}
-                                <img src="{{ image.image.url }}" alt="{{ product.title }} - تصویر {{ forloop.counter }}" class="thumbnail" data-large="{{ image.image.url }}">
-                            {% else %}
-                                <img src="https://via.placeholder.com/100" alt="{{ product.title }} - بدون تصویر" class="thumbnail" data-large="https://via.placeholder.com/400">
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                {% endif %}
+    <h1>{{ product.title }}</h1>
+    <p>{{ product.description }}</p>
+
+    <!-- علاقه‌مندی -->
+    <form action="{% url 'home:product_favourite' product.id %}" method="post" class="favourite-form">
+        {% csrf_token %}
+        <button type="submit" class="favourite-btn">
+            {% if is_favourite %}
+                ❤️ حذف از علاقه‌مندی
             {% else %}
-                <!-- تصویر پیش‌فرض -->
-                <img src="https://via.placeholder.com/400" alt="{{ product.title }} - بدون تصویر" class="main-image">
+                🤍 افزودن به علاقه‌مندی
             {% endif %}
-        </div>
+        </button>
+    </form>
 
-        <div class="product-info">
-            <div class="price-section">
-                {% if product.discount_price %}
-                    <span class="original-price">قیمت اصلی: {{ product.price }} تومان</span>
-                    <span class="discount-price">قیمت با تخفیف: {{ product.total_price }} تومان</span>
-                {% else %}
-                    <span class="final-price">قیمت: {{ product.price }} تومان</span>
-                {% endif %}
-            </div>
-            <p class="stock-status">
-                {% if product.quantity > 0 %}
-                    موجود در انبار: {{ product.quantity }} عدد
-                {% else %}
-                    ناموجود
-                {% endif %}
-            </p>
-            <p class="description">{{ product.description|default:"توضیحاتی موجود نیست." }}</p>
-
-            <!-- فرم افزودن به سبد خرید -->
-            <div class="variant-selection">
-                <form method="post" action="{% url 'cart:add_to_cart' product_id=product.id %}" class="add-to-cart-form">
-                    {% csrf_token %}
-                    <!-- نمایش فیلد رنگ اگر وجود داشته باشد -->
-                    {% if has_colors %}
-                        <div class="variant-field">
-                            <label for="color">رنگ:</label>
-                            <select name="color_id" id="color" {% if has_colors %}required{% endif %}>
-                                <option value="">انتخاب کنید</option>
-                                {% for color in colors %}
-                                    <option value="{{ color.color__id }}">{{ color.color__color }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    {% endif %}
-                    <!-- نمایش فیلد اندازه اگر وجود داشته باشد -->
-                    {% if has_sizes %}
-                        <div class="variant-field">
-                            <label for="size">اندازه:</label>
-                            <select name="size_id" id="size" {% if has_sizes %}required{% endif %}>
-                                <option value="">انتخاب کنید</option>
-                                {% for size in sizes %}
-                                    <option value="{{ size.size__id }}">{{ size.size__size }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    {% endif %}
-                    <!-- پیام اگر هیچ واریانتی وجود ندارد -->
-                    {% if not has_colors and not has_sizes %}
-                        <p class="no-variants">این محصول واریانت (رنگ یا اندازه) ندارد.</p>
-                    {% endif %}
-                    <!-- تعداد -->
-                    <div class="quantity-field">
-                        <label for="quantity">تعداد:</label>
-                        <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.quantity|default:10 }}">
-                    </div>
-                    <!-- دکمه افزودن به سبد خرید -->
-                    <button type="submit" class="btn-add-to-cart" {% if product.quantity <= 0 %}disabled{% endif %}>
-                        افزودن به سبد خرید
-                    </button>
-                </form>
-            </div>
-
-            <!-- دکمه لایک/حذف لایک -->
-            <div class="action-buttons">
-                <form action="{% url 'home:product_favourite' product_id=product.id %}" method="post" class="favourite-form">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-favourite {% if is_favourite %}btn-favourite-remove{% else %}btn-favourite-add{% endif %}">
-                        <i class="fas {% if is_favourite %}fa-heart-broken{% else %}fa-heart{% endif %}"></i>
-                        {% if is_favourite %}
-                            حذف از علاقه‌مندی‌ها
-                        {% else %}
-                            افزودن به علاقه‌مندی‌ها
-                        {% endif %}
-                    </button>
-                </form>
-            </div>
-        </div>
+    <!-- رنگ -->
+    {% if has_colors %}
+    <div class="variant">
+        <label for="color">رنگ:</label>
+        <select id="color">
+            <option value="">انتخاب کنید</option>
+            {% for color in colors %}
+                <option value="{{ color.color__id }}">{{ color.color__color }}</option>
+            {% endfor %}
+        </select>
     </div>
+    {% endif %}
+
+    <!-- سایز -->
+    {% if has_sizes %}
+    <div class="variant">
+        <label for="size">سایز:</label>
+        <select id="size">
+            <option value="">انتخاب کنید</option>
+            {% for size in sizes %}
+                <option value="{{ size.size__id }}">{{ size.size__size }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    {% endif %}
+
+    <!-- قیمت -->
+    <div class="price-box" id="price-box">
+        {% if default_attribute %}
+            {% if default_attribute.get_discount_price %}
+                <span class="discount">{{ default_attribute.get_price }} تومان</span>
+                <span class="price">{{ default_attribute.get_discount_price }} تومان</span>
+            {% else %}
+                <span class="price">{{ default_attribute.get_price }} تومان</span>
+            {% endif %}
+        {% else %}
+            <span>قیمتی موجود نیست</span>
+        {% endif %}
+    </div>
+
+    <!-- دکمه سبد خرید (فعلاً نمایشی) -->
+    <button class="add-to-cart-btn">🛒 افزودن به سبد خرید</button>
+
 </div>
 
+<!-- اسکریپت تغییر قیمت -->
 <script>
-    // جاوااسکریپت برای تعویض تصویر اصلی با کلیک روی thumbnails
-    document.querySelectorAll('.thumbnail').forEach(thumb => {
-        thumb.addEventListener('click', () => {
-            const mainImage = document.getElementById('main-image');
-            mainImage.src = thumb.dataset.large;
-            mainImage.classList.add('fade');
-            setTimeout(() => mainImage.classList.remove('fade'), 300);
-        });
-    });
+    const variantData = {{ variant_data|safe }};
+    const colorSelect = document.getElementById('color');
+    const sizeSelect = document.getElementById('size');
+    const priceBox = document.getElementById('price-box');
+
+    function updatePrice() {
+        const selectedColor = colorSelect?.value || null;
+        const selectedSize = sizeSelect?.value || null;
+
+        const match = variantData.find(item =>
+            (item.color_id == selectedColor || !selectedColor) &&
+            (item.size_id == selectedSize || !selectedSize)
+        );
+
+        if (match) {
+            priceBox.innerHTML = match.discount_price
+                ? `<span class="discount">${match.price} تومان</span><span class="price">${match.discount_price} تومان</span>`
+                : `<span class="price">${match.total_price} تومان</span>`;
+        } else {
+            priceBox.innerHTML = '<span>موجود نیست</span>';
+        }
+    }
+
+    if (colorSelect) colorSelect.addEventListener('change', updatePrice);
+    if (sizeSelect) sizeSelect.addEventListener('change', updatePrice);
 </script>
 {% endblock %}
