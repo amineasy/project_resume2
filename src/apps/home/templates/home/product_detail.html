@@ -1,77 +1,89 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/base.css' %}">
-<link rel="stylesheet" href="{% static 'home/css/product_detail.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/product_detail.css' %}">
 {% endblock %}
 
 {% block title %}{{ product.title }}{% endblock %}
 
 {% block body %}
-<div class="product-detail">
-
-    <h1>{{ product.title }}</h1>
-    <p>{{ product.description }}</p>
-
-    <!-- علاقه‌مندی -->
-    <form action="{% url 'home:product_favourite' product.id %}" method="post" class="favourite-form">
-        {% csrf_token %}
-        <button type="submit" class="favourite-btn">
-            {% if is_favourite %}
-                ❤️ حذف از علاقه‌مندی
+<div class="product-detail-container">
+    <div class="product-grid">
+        <!-- Product Image -->
+        <div class="product-image">
+            {% if product.images.first %}
+                <img src="{{ product.images.first.image.url }}" alt="{{ product.title }}" class="main-image">
             {% else %}
-                🤍 افزودن به علاقه‌مندی
+                <img src="{% static 'images/placeholder.png' %}" alt="No image available" class="main-image">
             {% endif %}
-        </button>
-    </form>
+        </div>
 
-    <!-- رنگ -->
-    {% if has_colors %}
-    <div class="variant">
-        <label for="color">رنگ:</label>
-        <select id="color">
-            <option value="">انتخاب کنید</option>
-            {% for color in colors %}
-                <option value="{{ color.color__id }}">{{ color.color__color }}</option>
-            {% endfor %}
-        </select>
+        <!-- Product Details -->
+        <div class="product-info">
+            <h1 class="product-title">{{ product.title }}</h1>
+            <p class="description">{{ product.description }}</p>
+
+            <!-- Variant Selection -->
+            <div class="variant-selection">
+                {% if has_colors %}
+                <div class="variant-field">
+                    <label for="color">رنگ:</label>
+                    <select id="color" class="variant-select">
+                        <option value="">انتخاب کنید</option>
+                        {% for color in colors %}
+                            <option value="{{ color.color__id }}">{{ color.color__color }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+
+                {% if has_sizes %}
+                <div class="variant-field">
+                    <label for="size">سایز:</label>
+                    <select id="size" class="variant-select">
+                        <option value="">انتخاب کنید</option>
+                        {% for size in sizes %}
+                            <option value="{{ size.size__id }}">{{ size.size__size }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Price Section -->
+            <div class="price-section" id="price-box">
+                {% if default_attribute %}
+                    {% if default_attribute.get_discount_price %}
+                        <span class="original-price">{{ default_attribute.get_price }} تومان</span>
+                        <span class="final-price">{{ default_attribute.get_discount_price }} تومان</span>
+                    {% else %}
+                        <span class="final-price">{{ default_attribute.get_price }} تومان</span>
+                    {% endif %}
+                {% else %}
+                    <span class="no-variants">قیمتی موجود نیست</span>
+                {% endif %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-add-to-cart">🛒 افزودن به سبد خرید</button>
+                <form action="{% url 'home:product_favourite' product.id %}" method="post" class="favourite-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-favourite">
+                        {% if is_favourite %}
+                            ❤️ حذف از علاقه‌مندی
+                        {% else %}
+                            🤍 افزودن به علاقه‌مندی
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
-    {% endif %}
-
-    <!-- سایز -->
-    {% if has_sizes %}
-    <div class="variant">
-        <label for="size">سایز:</label>
-        <select id="size">
-            <option value="">انتخاب کنید</option>
-            {% for size in sizes %}
-                <option value="{{ size.size__id }}">{{ size.size__size }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    {% endif %}
-
-    <!-- قیمت -->
-    <div class="price-box" id="price-box">
-        {% if default_attribute %}
-            {% if default_attribute.get_discount_price %}
-                <span class="discount">{{ default_attribute.get_price }} تومان</span>
-                <span class="price">{{ default_attribute.get_discount_price }} تومان</span>
-            {% else %}
-                <span class="price">{{ default_attribute.get_price }} تومان</span>
-            {% endif %}
-        {% else %}
-            <span>قیمتی موجود نیست</span>
-        {% endif %}
-    </div>
-
-    <!-- دکمه سبد خرید (فعلاً نمایشی) -->
-    <button class="add-to-cart-btn">🛒 افزودن به سبد خرید</button>
-
 </div>
 
-<!-- اسکریپت تغییر قیمت -->
+<!-- JavaScript for Price Update -->
 <script>
     const variantData = {{ variant_data|safe }};
     const colorSelect = document.getElementById('color');
@@ -89,10 +101,10 @@
 
         if (match) {
             priceBox.innerHTML = match.discount_price
-                ? `<span class="discount">${match.price} تومان</span><span class="price">${match.discount_price} تومان</span>`
-                : `<span class="price">${match.total_price} تومان</span>`;
+                ? `<span class="original-price">${match.price} تومان</span><span class="final-price">${match.discount_price} تومان</span>`
+                : `<span class="final-price">${match.total_price} تومان</span>`;
         } else {
-            priceBox.innerHTML = '<span>موجود نیست</span>';
+            priceBox.innerHTML = '<span class="no-variants">موجود نیست</span>';
         }
     }
 
