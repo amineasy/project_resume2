@@ -2,126 +2,53 @@
 {% load static %}
 
 {% block css %}
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'home/css/product_detail.css' %}?v=3">
+        <link rel="stylesheet" href="{% static 'css/cart.css' %}">
+        <link rel="stylesheet" href="{% static 'css/base.css' %}">
 {% endblock %}
 
 {% block body %}
-<div class="product-detail-container">
-    <h1 class="product-title">{{ product.title }}</h1>
 
-    <div class="product-details">
-        <div class="product-image-gallery">
-            {% if product.productimage_set.all %}
-                <!-- تصویر اصلی -->
-                {% with first_image=product.productimage_set.first %}
-                    <img src="{% if first_image.image %}{{ first_image.image.url }}{% else %}https://via.placeholder.com/400{% endif %}" alt="{{ product.title }}" class="main-image" id="main-image">
-                {% endwith %}
-                <!-- گالری تصاویر کوچک -->
-                {% if product.productimage_set.count > 1 %}
-                    <div class="thumbnail-gallery">
-                        {% for image in product.productimage_set.all %}
-                            {% if image.image %}
-                                <img src="{{ image.image.url }}" alt="{{ product.title }} - تصویر {{ forloop.counter }}" class="thumbnail" data-large="{{ image.image.url }}">
-                            {% else %}
-                                <img src="https://via.placeholder.com/100" alt="{{ product.title }} - بدون تصویر" class="thumbnail" data-large="https://via.placeholder.com/400">
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            {% else %}
-                <!-- تصویر پیش‌فرض -->
-                <img src="https://via.placeholder.com/400" alt="{{ product.title }} - بدون تصویر" class="main-image">
-            {% endif %}
-        </div>
-
-        <div class="product-info">
-            <div class="price-section">
-                {% if product.discount_price %}
-                    <span class="original-price">قیمت اصلی: {{ product.price }} تومان</span>
-                    <span class="discount-price">قیمت با تخفیف: {{ product.total_price }} تومان</span>
-                {% else %}
-                    <span class="final-price">قیمت: {{ product.price }} تومان</span>
-                {% endif %}
+    <div class="cart-container">
+        <h1>Your Shopping Cart</h1>
+        {% if cart|length > 0 %}
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>${{ item.price }}</td>
+                            <td>${{ item.total_price }}</td>
+                            <td>
+                                <form action="{% url 'cart:cart_remove' item.product.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="remove-btn">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="cart-total">
+                <h3>Total: ${{ total_price }}</h3>
             </div>
-            <p class="stock-status">
-                {% if product.quantity > 0 %}
-                    موجود در انبار: {{ product.quantity }} عدد
-                {% else %}
-                    ناموجود
-                {% endif %}
-            </p>
-            <p class="description">{{ product.description|default:"توضیحاتی موجود نیست." }}</p>
-
-            <!-- انتخاب واریانت‌ها (رنگ و اندازه) -->
-            <div class="variant-selection">
-                <form method="post" action="{% url 'cart:add_to_cart' product_id=product.id %}" class="add-to-cart-form">
-                    {% csrf_token %}
-                    {% if product.productattribute_set.all %}
-                        <!-- انتخاب رنگ -->
-                        <div class="variant-field">
-                            <label for="color">رنگ:</label>
-                            <select name="color_id" id="color" required>
-                                <option value="">انتخاب کنید</option>
-                                {% for attr in product.productattribute_set.distinct.all %}
-                                    {% if attr.color %}
-                                        <option value="{{ attr.color.id }}">{{ attr.color.color }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <!-- انتخاب اندازه -->
-                        <div class="variant-field">
-                            <label for="size">اندازه:</label>
-                            <select name="size_id" id="size" required>
-                                <option value="">انتخاب کنید</option>
-                                {% for attr in product.productattribute_set.distinct.all %}
-                                    {% if attr.size %}
-                                        <option value="{{ attr.size.id }}">{{ attr.size.size }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                    {% endif %}
-                    <!-- تعداد -->
-                    <div class="quantity-field">
-                        <label for="quantity">تعداد:</label>
-                        <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.quantity|default:10 }}">
-                    </div>
-                    <!-- دکمه افزودن به سبد خرید -->
-                    <button type="submit" class="btn-add-to-cart" {% if product.quantity <= 0 %}disabled{% endif %}>
-                        افزودن به سبد خرید
-                    </button>
-                </form>
+            <div class="cart-actions">
+                <a href="{% url 'shop:product_list' %}" class="continue-shopping">Continue Shopping</a>
+                <a href="{% url 'orders:order_create' %}" class="checkout-btn">Proceed to Checkout</a>
             </div>
+        {% else %}
+            <p class="empty-cart">سبد خرید شما خالی هست.</p>
 
-            <!-- دکمه لایک/حذف لایک -->
-            <div class="action-buttons">
-                <form action="{% url 'home:product_favourite' product_id=product.id %}" method="post" class="favourite-form">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-favourite {% if is_favourite %}btn-favourite-remove{% else %}btn-favourite-add{% endif %}">
-                        <i class="fas {% if is_favourite %}fa-heart-broken{% else %}fa-heart{% endif %}"></i>
-                        {% if is_favourite %}
-                            حذف از علاقه‌مندی‌ها
-                        {% else %}
-                            افزودن به علاقه‌مندی‌ها
-                        {% endif %}
-                    </button>
-                </form>
-            </div>
-        </div>
+        {% endif %}
     </div>
-</div>
 
-<script>
-    // جاوااسکریپت برای تعویض تصویر اصلی با کلیک روی thumbnails
-    document.querySelectorAll('.thumbnail').forEach(thumb => {
-        thumb.addEventListener('click', () => {
-            const mainImage = document.getElementById('main-image');
-            mainImage.src = thumb.dataset.large;
-            mainImage.classList.add('fade');
-            setTimeout(() => mainImage.classList.remove('fade'), 300);
-        });
-    });
-</script>
 {% endblock %}

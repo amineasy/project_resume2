@@ -1,114 +1,128 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block css %}
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'home/css/product_detail.css' %}">
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="{% static 'home/css/product_detail.css' %}">
 {% endblock %}
 
 {% block title %}{{ product.title }}{% endblock %}
 
 {% block body %}
 <div class="product-detail-container">
-    <div class="product-grid">
-        <!-- Product Image -->
-        <div class="product-image">
-            {% if product.images.first %}
-                <img src="{{ product.images.first.image.url }}" alt="{{ product.title }}" class="main-image">
-            {% else %}
-                <img src="{% static 'images/placeholder.png' %}" alt="No image available" class="main-image">
-            {% endif %}
-        </div>
-
-        <!-- Product Details -->
-        <div class="product-info">
-            <h1 class="product-title">{{ product.title }}</h1>
-            <p class="description">{{ product.description }}</p>
-
-            <!-- Variant Selection -->
-            <div class="variant-selection">
-                {% if has_colors %}
-                <div class="variant-field">
-                    <label for="color">رنگ:</label>
-                    <select id="color" class="variant-select">
-                        <option value="">انتخاب کنید</option>
-                        {% for color in colors %}
-                            <option value="{{ color.color__id }}">{{ color.color__color }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                {% endif %}
-
-                {% if has_sizes %}
-                <div class="variant-field">
-                    <label for="size">سایز:</label>
-                    <select id="size" class="variant-select">
-                        <option value="">انتخاب کنید</option>
-                        {% for size in sizes %}
-                            <option value="{{ size.size__id }}">{{ size.size__size }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                {% endif %}
-            </div>
-
-            <!-- Price Section -->
-            <div class="price-section" id="price-box">
-                {% if default_attribute %}
-                    {% if default_attribute.get_discount_price %}
-                        <span class="original-price">{{ default_attribute.get_price }} تومان</span>
-                        <span class="final-price">{{ default_attribute.get_discount_price }} تومان</span>
-                    {% else %}
-                        <span class="final-price">{{ default_attribute.get_price }} تومان</span>
-                    {% endif %}
-                {% else %}
-                    <span class="no-variants">قیمتی موجود نیست</span>
-                {% endif %}
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <button class="btn-add-to-cart">🛒 افزودن به سبد خرید</button>
-                <form action="{% url 'home:product_favourite' product.id %}" method="post" class="favourite-form">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-favourite">
-                        {% if is_favourite %}
-                            ❤️ حذف از علاقه‌مندی
-                        {% else %}
-                            🤍 افزودن به علاقه‌مندی
-                        {% endif %}
-                    </button>
-                </form>
-            </div>
-        </div>
+  <div class="product-grid">
+    <!-- تصویر محصول -->
+    <div class="product-image">
+      {% if product.images.first %}
+        <img src="{{ product.images.first.image.url }}" alt="{{ product.title }}" class="main-image">
+      {% else %}
+        <img src="{% static 'images/placeholder.png' %}" alt="No image available" class="main-image">
+      {% endif %}
     </div>
+
+    <!-- اطلاعات محصول -->
+    <div class="product-info">
+      <h1 class="product-title">{{ product.title }}</h1>
+      <p class="description">{{ product.description }}</p>
+
+      <!-- فرم افزودن به سبد خرید -->
+      <form action="{% url 'cart:add_to_cart' product.id %}" method="post">
+        {% csrf_token %}
+
+        <!-- انتخاب واریانت -->
+        <div class="variant-selection">
+          {% if has_colors %}
+          <div class="variant-field">
+            <label for="color">رنگ:</label>
+            <select name="color_id" id="color" class="variant-select">
+              <option value="">انتخاب کنید</option>
+              {% for color in colors %}
+                <option value="{{ color.color_id }}">{{ color.color__color }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          {% endif %}
+
+          {% if has_sizes %}
+          <div class="variant-field">
+            <label for="size">سایز:</label>
+            <select name="size_id" id="size" class="variant-select">
+              <option value="">انتخاب کنید</option>
+              {% for size in sizes %}
+                <option value="{{ size.size_id }}">{{ size.size__size }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- قیمت -->
+        <div class="price-section" id="price-box">
+          {% if default_attribute %}
+            {% if default_attribute.discount_price %}
+              <span class="original-price">{{ default_attribute.price }} تومان</span>
+              <span class="final-price">{{ default_attribute.total_price }} تومان</span>
+            {% else %}
+              <span class="final-price">{{ default_attribute.total_price }} تومان</span>
+            {% endif %}
+          {% else %}
+            {% if product.discount_price %}
+              <span class="original-price">{{ product.price }} تومان</span>
+              <span class="final-price">{{ product.discount_price }} تومان</span>
+            {% else %}
+              <span class="final-price">{{ product.price }} تومان</span>
+            {% endif %}
+          {% endif %}
+        </div>
+
+        <!-- دکمه افزودن به سبد خرید -->
+        <div class="action-buttons">
+          <button type="submit" class="btn-add-to-cart">🛒 افزودن به سبد خرید</button>
+        </div>
+      </form>
+
+      <!-- فرم علاقه‌مندی -->
+      <form action="{% url 'home:product_favourite' product.id %}" method="post" class="favourite-form">
+        {% csrf_token %}
+        <button type="submit" class="btn-favourite">
+          {% if is_favourite %}
+            ❤️ حذف از علاقه‌مندی
+          {% else %}
+            🤍 افزودن به علاقه‌مندی
+          {% endif %}
+        </button>
+      </form>
+    </div>
+  </div>
 </div>
 
-<!-- JavaScript for Price Update -->
+<!-- اسکریپت تغییر قیمت -->
 <script>
-    const variantData = {{ variant_data|safe }};
-    const colorSelect = document.getElementById('color');
-    const sizeSelect = document.getElementById('size');
-    const priceBox = document.getElementById('price-box');
+  const variantData = {{ variant_data|safe }};
+  const colorSelect = document.getElementById('color');
+  const sizeSelect = document.getElementById('size');
+  const priceBox = document.getElementById('price-box');
 
-    function updatePrice() {
-        const selectedColor = colorSelect?.value || null;
-        const selectedSize = sizeSelect?.value || null;
+  function updatePrice() {
+    const selectedColor = colorSelect?.value || null;
+    const selectedSize = sizeSelect?.value || null;
 
-        const match = variantData.find(item =>
-            (item.color_id == selectedColor || !selectedColor) &&
-            (item.size_id == selectedSize || !selectedSize)
-        );
+    const match = variantData.find(item =>
+      (item.color_id?.toString() === selectedColor || (!selectedColor && item.color_id === null)) &&
+      (item.size_id?.toString() === selectedSize || (!selectedSize && item.size_id === null))
+    );
 
-        if (match) {
-            priceBox.innerHTML = match.discount_price
-                ? `<span class="original-price">${match.price} تومان</span><span class="final-price">${match.discount_price} تومان</span>`
-                : `<span class="final-price">${match.total_price} تومان</span>`;
-        } else {
-            priceBox.innerHTML = '<span class="no-variants">موجود نیست</span>';
-        }
+    if (match) {
+      priceBox.innerHTML = match.discount_price
+        ? `<span class="original-price">${match.price} تومان</span><span class="final-price">${match.total_price} تومان</span>`
+        : `<span class="final-price">${match.total_price} تومان</span>`;
+    } else {
+      priceBox.innerHTML = '<span class="final-price"></span>';
     }
+  }
 
-    if (colorSelect) colorSelect.addEventListener('change', updatePrice);
-    if (sizeSelect) sizeSelect.addEventListener('change', updatePrice);
+  updatePrice();
+  if (colorSelect) colorSelect.addEventListener('change', updatePrice);
+  if (sizeSelect) sizeSelect.addEventListener('change', updatePrice);
 </script>
 {% endblock %}

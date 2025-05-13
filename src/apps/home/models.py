@@ -99,7 +99,12 @@ class ProductAttribute(models.Model):
             self.discount_price = self.product.discount_price
             return self.discount_price
         else:
-            return None
+            if self.price != self.product.price:
+                if self.discount_price:
+                    return self.discount_price
+                else:
+                    return 0
+
 
 
 

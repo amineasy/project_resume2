@@ -56,12 +56,12 @@ def product_detail(request, id, slug=None):
 
 
     # دریافت لیست رنگ‌ها و اندازه‌ها
-    colors = attributes.filter(color__isnull=False)\
-        .values('color__id', 'color__color')\
+    colors = attributes.filter(color__isnull=False) \
+        .values('color_id', 'color__color') \
         .distinct()
 
-    sizes = attributes.filter(size__isnull=False)\
-        .values('size__id', 'size__size')\
+    sizes = attributes.filter(size__isnull=False) \
+        .values('size_id', 'size__size') \
         .distinct()
 
     # تولید داده‌های واریانت با مدیریت None
@@ -69,9 +69,9 @@ def product_detail(request, id, slug=None):
         {
             'color_id': attr.color.id if attr.color else None,
             'size_id': attr.size.id if attr.size else None,
-            'price': attr.get_price() or 0,
-            'discount_price': attr.get_discount_price() or None,
-            'total_price': attr.get_total_price() or 0
+            'price': attr.price or 0,
+            'discount_price': attr.discount_price or None,
+            'total_price': attr.total_price or 0
         }
         for attr in attributes
     ]
