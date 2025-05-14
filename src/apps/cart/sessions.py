@@ -32,6 +32,24 @@ class Cart:
 
         self.save()
 
+    def update_quantity(self, product, attribute=None, quantity=1):
+        """به‌روزرسانی تعداد یک محصول خاص"""
+        product_id = str(product.id)
+        item_id = f'{product_id}_{attribute.id}' if attribute else product_id
+
+        if item_id in self.cart:
+            self.cart[item_id]['quantity'] = int(quantity)
+            self.save()
+
+    def remove(self, product, attribute=None):
+        """حذف یک آیتم خاص از سبد خرید"""
+        product_id = str(product.id)
+        item_id = f'{product_id}_{attribute.id}' if attribute else product_id
+
+        if item_id in self.cart:
+            del self.cart[item_id]
+            self.save()
+
     def __iter__(self):
         item_ids = self.cart.keys()
         product_ids = [item.split('_')[0] for item in item_ids]
@@ -48,9 +66,12 @@ class Cart:
         cart = self.cart.copy()
         for item_id, item in cart.items():
             product_id = item['product_id']
-            item['product'] = product_map.get(product_id)
+            product = product_map.get(product_id)
 
-            # تبدیل رشته‌ها به عدد صحیح
+            if not product:
+                continue  # ⛔ آیتمی که محصولش وجود ندارد را رد کن
+
+            item['product'] = product
             price = int(item['price'])
             quantity = int(item['quantity'])
             item['price'] = price
@@ -62,8 +83,17 @@ class Cart:
 
             yield item
 
+    def __len__(self):
+        """تعداد کل آیتم‌های موجود در سبد خرید (بر اساس تعدادشان)"""
+        return sum(item['quantity'] for item in self.cart.values())
+
     def get_cart_total_price(self):
         return sum(item['total_price'] for item in self)
+
+    def clear(self):
+        """خالی کردن کامل سبد خرید"""
+        self.session[CART_SESSION_ID] = {}
+        self.session.modified = True
 
     def save(self):
         self.session[CART_SESSION_ID] = self.cart

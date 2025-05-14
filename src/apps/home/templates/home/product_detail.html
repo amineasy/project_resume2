@@ -34,7 +34,7 @@
           {% if has_colors %}
           <div class="variant-field">
             <label for="color">رنگ:</label>
-            <select name="color_id" id="color" class="variant-select">
+            <select name="color_id" id="color" class="variant-select" required>
               <option value="">انتخاب کنید</option>
               {% for color in colors %}
                 <option value="{{ color.color_id }}">{{ color.color__color }}</option>
@@ -46,7 +46,7 @@
           {% if has_sizes %}
           <div class="variant-field">
             <label for="size">سایز:</label>
-            <select name="size_id" id="size" class="variant-select">
+            <select name="size_id" id="size" class="variant-select" required>
               <option value="">انتخاب کنید</option>
               {% for size in sizes %}
                 <option value="{{ size.size_id }}">{{ size.size__size }}</option>
@@ -55,6 +55,9 @@
           </div>
           {% endif %}
         </div>
+
+        <!-- مقدار quantity مخفی و پیش‌فرض 1 -->
+        <input type="hidden" name="quantity" value="1">
 
         <!-- قیمت -->
         <div class="price-section" id="price-box">

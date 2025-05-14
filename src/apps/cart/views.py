@@ -4,37 +4,24 @@ from apps.cart.sessions import Cart
 from apps.home.models import Product, ProductAttribute
 
 def add_to_cart(request, product_id):
-    HTTP_REFERER = request.META.get('HTTP_REFERER', '/')
     product = get_object_or_404(Product, id=product_id)
+    cart = Cart(request)
 
-    if request.method == 'POST':
-        cart = Cart(request)
-        quantity = int(request.POST.get('quantity', 1))
-        color_id = request.POST.get('color_id')
-        size_id = request.POST.get('size_id')
+    color_id = request.POST.get('color_id')
+    size_id = request.POST.get('size_id')
+    quantity = int(request.POST.get('quantity', 1))
 
-        attribute = None
-        if color_id or size_id:
-            filters = {'product': product.id}
-            if color_id:
-                filters['color__id'] = color_id
-            if size_id:
-                filters['size__id'] = size_id
-            try:
-                attribute = ProductAttribute.objects.get(**filters)
-            except ProductAttribute.DoesNotExist:
-                messages.error(request, 'واریانت انتخاب‌شده معتبر نیست.')
-                return redirect('home:product_detail', id=product.id, slug=product.slug)
+    attribute = None
+    if color_id or size_id:
+        try:
+            attribute = ProductAttribute.objects.get(product=product, color_id=color_id or None, size_id=size_id or None)
+        except ProductAttribute.DoesNotExist:
+            messages.error(request, 'این ترکیب رنگ و سایز وجود ندارد.')
+            return redirect(request.META.get('HTTP_REFERER', 'home:home'))
 
-        max_quantity = attribute.quantity if attribute else product.quantity
-        if quantity > max_quantity:
-            messages.error(request, 'تعداد درخواستی بیشتر از موجودی است.')
-            return redirect('home:product_detail', id=product.id, slug=product.slug)
-
-        cart.add_to_cart(product=product, attribute=attribute, quantity=quantity)
-        messages.success(request, f'{product.title} به سبد خرید اضافه شد.')
-
-    return redirect(HTTP_REFERER)
+    cart.add_to_cart(product, attribute, quantity)
+    messages.success(request, 'محصول با موفقیت به سبد خرید اضافه شد.')
+    return redirect('cart:cart_view')
 
 
 def cart_view(request):
@@ -43,3 +30,87 @@ def cart_view(request):
         'cart': cart,
         'total_price': cart.get_cart_total_price()
     })
+
+
+def decrease_cart_quantity(request, product_id, attribute_id=None):
+    """کاهش تعداد محصول در سبد خرید"""
+    product = get_object_or_404(Product, id=product_id)
+    cart = Cart(request)
+
+    attribute = None
+    if attribute_id:
+        attribute = get_object_or_404(ProductAttribute, id=attribute_id)
+
+    # مقدار فعلی
+    current_quantity = cart.cart.get(
+        f'{product_id}_{attribute_id}' if attribute else str(product_id),
+        {}
+    ).get('quantity', 1)
+
+    new_quantity = current_quantity - 1
+
+    if new_quantity < 1:
+        messages.error(request, 'حداقل تعداد باید ۱ باشد.')
+    else:
+        cart.update_quantity(product, attribute, new_quantity)
+        messages.success(request, 'تعداد کاهش یافت.')
+
+    return redirect('cart:cart_view')
+
+
+
+
+
+def increase_cart_quantity(request, product_id, attribute_id=None):
+    """افزایش تعداد محصول در سبد خرید"""
+    product = get_object_or_404(Product, id=product_id)
+    cart = Cart(request)
+
+    attribute = None
+    if attribute_id:
+        attribute = get_object_or_404(ProductAttribute, id=attribute_id)
+
+    max_quantity = attribute.quantity if attribute else product.quantity
+
+    # مقدار فعلی
+    current_quantity = cart.cart.get(
+        f'{product_id}_{attribute_id}' if attribute else str(product_id),
+        {}
+    ).get('quantity', 0)
+
+    new_quantity = current_quantity + 1
+
+    if new_quantity > max_quantity:
+        messages.error(request, 'تعداد درخواستی بیشتر از موجودی است.')
+    else:
+        cart.update_quantity(product, attribute, new_quantity)
+        messages.success(request, 'تعداد افزایش یافت.')
+
+    return redirect('cart:cart_view')
+
+
+
+
+
+
+def remove_from_cart(request, product_id, attribute_id=None):
+    """حذف یک آیتم از سبد خرید"""
+    product = get_object_or_404(Product, id=product_id)
+    cart = Cart(request)
+
+    attribute = None
+    if attribute_id:
+        attribute = get_object_or_404(ProductAttribute, id=attribute_id)
+
+    cart.remove(product, attribute)
+    messages.success(request, 'محصول از سبد خرید حذف شد.')
+
+    return redirect('cart:cart_view')
+
+
+def clear_cart(request):
+    """خالی کردن کامل سبد خرید (اختیاری)"""
+    cart = Cart(request)
+    cart.clear()
+    messages.success(request, 'سبد خرید خالی شد.')
+    return redirect('cart:cart_view')

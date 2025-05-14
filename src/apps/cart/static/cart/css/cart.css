@@ -1,0 +1,68 @@
+body {
+    direction: rtl;
+    font-family: 'Vazirmatn', sans-serif;
+}
+
+.cart-item {
+    transition: all 0.3s ease;
+}
+
+.cart-item:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity-control button {
+    width: 40px;
+    height: 40px;
+}
+
+.total-price {
+    font-size: 1.5rem;
+    color: #198754;
+}
+
+.btn-checkout {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-checkout:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-remove {
+    color: #dc3545;
+}
+
+.btn-remove:hover {
+    color: #b02a37;
+}
+
+.cart-header {
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+.empty-cart {
+    font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+    .quantity-control {
+        gap: 5px;
+    }
+    .quantity-control button {
+        width: 35px;
+        height: 35px;
+    }
+    .total-price {
+        font-size: 1.3rem;
+    }
+}
