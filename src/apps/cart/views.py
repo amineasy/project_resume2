@@ -1,5 +1,8 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
+
+from apps.cart.forms import OrderForm
+from apps.cart.models import OrderItem
 from apps.cart.sessions import Cart
 from apps.home.models import Product, ProductAttribute
 
@@ -114,3 +117,30 @@ def clear_cart(request):
     cart.clear()
     messages.success(request, 'سبد خرید خالی شد.')
     return redirect('cart:cart_view')
+
+
+
+
+
+def order_cart(request):
+    cart = Cart(request)
+    if not cart:
+        return redirect('cart:cart_view')
+
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.user = request.user
+            order.save()
+
+        for i in cart:
+            OrderItem.objects.create(order=order,product=i['product_id'],attribute=i['attribute_id'],quantity=i['quantity'],price=i['price'])
+
+        cart.clear()
+    form = OrderForm()
+    context = {'form': form,'cart':cart}
+
+    return render(request, 'cart/order_cart.html',context)
+
+
