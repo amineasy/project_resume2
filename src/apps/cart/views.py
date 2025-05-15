@@ -119,12 +119,10 @@ def clear_cart(request):
     return redirect('cart:cart_view')
 
 
-
-
-
 def order_cart(request):
     cart = Cart(request)
     if not cart:
+        messages.error(request, 'سبد خرید خالی است.')
         return redirect('cart:cart_view')
 
     if request.method == 'POST':
@@ -134,13 +132,34 @@ def order_cart(request):
             order.user = request.user
             order.save()
 
-        for i in cart:
-            OrderItem.objects.create(order=order,product=i['product_id'],attribute=i['attribute_id'],quantity=i['quantity'],price=i['price'])
+            for i in cart:
+                try:
 
-        cart.clear()
-    form = OrderForm()
-    context = {'form': form,'cart':cart}
+                    product_instance = Product.objects.get(id=i['product_id'])
+                    attribute_instance = None
+                    if i['attribute_id']:
+                        attribute_instance = ProductAttribute.objects.get(id=i['attribute_id'])
 
-    return render(request, 'cart/order_cart.html',context)
+                    OrderItem.objects.create(
+                        order=order,
+                        product=product_instance,
+                        attribute=attribute_instance,
+                        quantity=i['quantity'],
+                        price=i['price']
+                    )
+                except Product.DoesNotExist:
+                    messages.error(request, f"محصول با ID {i['product_id']} یافت نشد.")
+                    continue
+                except ProductAttribute.DoesNotExist:
+                    messages.error(request, f"ویژگی با ID {i['attribute_id']} یافت نشد.")
+                    continue
 
+            cart.clear()
+            messages.success(request, 'سفارش با موفقیت ثبت شد.')
+        else:
+            messages.error(request, 'لطفاً فرم را به درستی پر کنید.')
+    else:
+        form = OrderForm()
 
+    context = {'form': form, 'cart': cart}
+    return render(request, 'cart/order_cart.html', context)
