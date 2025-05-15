@@ -1,5 +1,5 @@
 from itertools import product
-
+from django.db.models import Sum
 from django.db import models
 from treebeard.mp_tree import MP_Node
 
@@ -38,9 +38,25 @@ class Product(models.Model):
     discount_price = models.IntegerField(blank=True,null=True)
     total_price = models.IntegerField(blank=True,null=True)
     quantity = models.IntegerField(default=1)
-
     slug = models.SlugField(max_length=100, unique=True)
     description = models.TextField(blank=True,null=True)
+    view_count = models.PositiveIntegerField(default=0)
+
+    def increase_view_count(self):
+        self.view_count += 1
+        self.save(update_fields=['view_count'])
+
+    @classmethod
+    def get_top_selling_products(cls, limit=100):
+        return cls.objects.annotate(total_sold=Sum('order_item__quantity')).order_by('-total_sold')[:limit]
+
+    @classmethod
+    def get_most_viewed_products(cls, limit=100):
+        return cls.objects.order_by('-view_count')[:limit]
+
+
+
+
 
     def get_total_price(self):
         if self.discount_price:

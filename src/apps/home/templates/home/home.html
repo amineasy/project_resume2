@@ -1,14 +1,17 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'home/css/home.css' %}">
-
+    <!-- Swiper CSS از CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 {% endblock %}
 
 {% block title %}خانه{% endblock %}
 
 {% block body %}
+    <!-- منوی دسته‌بندی‌ها -->
     <nav class="navbar">
         <div class="dropdown">
             <button class="dropbtn">دسته‌بندی‌ها</button>
@@ -20,6 +23,71 @@
         </div>
     </nav>
 
-    <script src="{% static 'home/js/home.js' %}"></script>
+    <!-- بخش پرفروش‌ترین محصولات -->
+    <section class="top-selling">
+        <div class="section-header">
+            <h2>پرفروش‌ترین محصولات</h2>
+            <a href="{% url 'home:top_selling' %}" class="view-all">مشاهده همه</a>
+        </div>
+        <div class="swiper top-selling-swiper">
+            <div class="swiper-wrapper">
+                {% for product in top_selling %}
+                    <div class="swiper-slide">
+                        <div class="product-card">
+                            {% if product.images.first %}
+                                <img src="{{ product.images.first.image.url }}" alt="{{ product.title }}" class="product-image">
+                            {% else %}
+                                <img src="{% static 'images/placeholder.png' %}" alt="بدون تصویر" class="product-image">
+                            {% endif %}
+                            <h3>{{ product.title }}</h3>
+                            <p class="price">قیمت: {{ product.total_price }} تومان</p>
+                            <p class="sales">فروش: {{ product.total_sold|default:0 }}</p>
+                            <a href="{% url 'home:product_detail' product.id product.slug %}" class="product-link">مشاهده محصول</a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>محصولی برای نمایش وجود ندارد.</p>
+                {% endfor %}
+            </div>
+            <!-- دکمه‌های ناوبری -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
+    </section>
 
+    <!-- بخش پربازدیدترین محصولات -->
+    <section class="most-viewed">
+        <div class="section-header">
+            <h2>پربازدیدترین محصولات</h2>
+            <a href="{% url 'home:most_viewed' %}" class="view-all">مشاهده همه</a>
+        </div>
+        <div class="swiper most-viewed-swiper">
+            <div class="swiper-wrapper">
+                {% for product in most_viewed %}
+                    <div class="swiper-slide">
+                        <div class="product-card">
+                            {% if product.images.first %}
+                                <img src="{{ product.images.first.image.url }}" alt="{{ product.title }}" class="product-image">
+                            {% else %}
+                                <img src="{% static 'images/placeholder.png' %}" alt="بدون تصویر" class="product-image">
+                            {% endif %}
+                            <h3>{{ product.title }}</h3>
+                            <p class="price">قیمت: {{ product.total_price }} تومان</p>
+                            <p class="views">بازدید: {{ product.view_count }}</p>
+                            <a href="{% url 'home:product_detail' product.id product.slug %}" class="product-link">مشاهده محصول</a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>محصولی برای نمایش وجود ندارد.</p>
+                {% endfor %}
+            </div>
+            <!-- دکمه‌های ناوبری -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
+    </section>
+
+    <!-- جاوااسکریپت‌ها -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="{% static 'home/js/home.js' %}"></script>
 {% endblock %}

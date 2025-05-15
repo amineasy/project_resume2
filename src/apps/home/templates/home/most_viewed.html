@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/home.css' %}">
+{% endblock %}
+
+{% block title %}پربازدیدترین محصولات{% endblock %}
+
+{% block body %}
+    <section class="most-viewed">
+        <h2>پربازدیدترین محصولات</h2>
+        <div class="product-grid">
+            {% for product in most_viewed %}
+                <div class="product-card">
+                    {% if product.images.first %}
+                        <img src="{{ product.images.first.image.url }}" alt="{{ product.title }}" style="max-width: 100%;">
+                    {% endif %}
+                    <h3>{{ product.title }}</h3>
+                    <p>قیمت: {{ product.total_price }} تومان</p>
+                    <p>بازدید: {{ product.view_count }}</p>
+                    <a href="{% url 'home:product_detail' product.id product.slug %}">مشاهده محصول</a>
+                </div>
+            {% empty %}
+                <p>محصولی برای نمایش وجود ندارد.</p>
+            {% endfor %}
+        </div>
+    </section>
+    <script src="{% static 'home/js/home.js' %}"></script>
+{% endblock %}

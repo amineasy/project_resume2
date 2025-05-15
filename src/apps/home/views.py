@@ -1,7 +1,8 @@
 import json
-
+from django.core.cache import cache
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.db.models import Sum
 from django.shortcuts import render, get_object_or_404, redirect
 from apps.accounts.models import Profile
 from apps.home.models import Category, ProductClass, Product, Favourite
@@ -9,12 +10,71 @@ from apps.home.models import Category, ProductClass, Product, Favourite
 User = get_user_model()
 
 
+
+
+
 def home(request):
+    # دریافت دسته‌بندی‌های ریشه
     category = Category.get_root_nodes()
 
-    context = {'category': category}
+    # دریافت 3 محصول پرفروش با کش
+    cache_key_top = 'top_selling_products_home'
+    top_selling = cache.get(cache_key_top)
+    if top_selling is None:
+        print("محاسبه پرفروش‌ترین محصولات برای صفحه اصلی...")
+        top_selling = Product.get_top_selling_products(limit=3)  # فقط 3 تا
+        cache.set(cache_key_top, top_selling, 60 * 15)  # 15 دقیقه کش
+    else:
+        print("گرفتن پرفروش‌ترین از کش برای صفحه اصلی")
 
+    # دریافت 3 محصول پربازدید با کش
+    cache_key_viewed = 'most_viewed_products_home'
+    most_viewed = cache.get(cache_key_viewed)
+    if most_viewed is None:
+        print("محاسبه پربازدیدترین محصولات برای صفحه اصلی...")
+        most_viewed = Product.get_most_viewed_products(limit=3)  # فقط 3 تا
+        cache.set(cache_key_viewed, most_viewed, 60 * 15)  # 15 دقیقه کش
+    else:
+        print("گرفتن پربازدیدترین از کش برای صفحه اصلی")
+
+    context = {
+        'category': category,
+        'top_selling': top_selling,
+        'most_viewed': most_viewed
+    }
     return render(request, 'home/home.html', context)
+
+def top_selling_products(request):
+    # دریافت همه پرفروش‌ترین محصولات با کش
+    cache_key = 'top_selling_products'
+    top_selling = cache.get(cache_key)
+    if top_selling is None:
+        print("محاسبه پرفروش‌ترین محصولات...")
+        top_selling = Product.get_top_selling_products(limit=5)  # مثلاً 10 تا
+        cache.set(cache_key, top_selling, 60 * 15)  # 15 دقیقه کش
+    else:
+        print("گرفتن پرفروش‌ترین از کش")
+
+    context = {
+        'top_selling': top_selling
+    }
+    return render(request, 'home/top_selling.html', context)
+
+def most_viewed_products(request):
+    # دریافت همه پربازدیدترین محصولات با کش
+    cache_key = 'most_viewed_products'
+    most_viewed = cache.get(cache_key)
+    if most_viewed is None:
+        print("محاسبه پربازدیدترین محصولات...")
+        most_viewed = Product.get_most_viewed_products(limit=5)  # مثلاً 10 تا
+        cache.set(cache_key, most_viewed, 60 * 15)  # 15 دقیقه کش
+    else:
+        print("گرفتن پربازدیدترین از کش")
+
+    context = {
+        'most_viewed': most_viewed
+    }
+    return render(request, 'home/most_viewed.html', context)
 
 
 def category_detail(request, id, slug=None):
@@ -39,21 +99,17 @@ def product_class_detail(request, id, slug=None):
     return render(request, 'home/product_class_detail.html', context)
 
 
-
-
-
 def product_detail(request, id, slug=None):
     product = get_object_or_404(Product, id=id, slug=slug)
     user = request.user
     is_favourite = False
+    product.increase_view_count()
 
     if user.is_authenticated:
         is_favourite = Favourite.objects.filter(user=user, product=product).exists()
 
     # بهینه‌سازی کوئری با select_related
     attributes = product.attributes_related.select_related('color', 'size').all()
-
-
 
     # دریافت لیست رنگ‌ها و اندازه‌ها
     colors = attributes.filter(color__isnull=False) \
@@ -79,8 +135,6 @@ def product_detail(request, id, slug=None):
     # واریانت پیش‌فرض
     default_attribute = attributes.first() if attributes.exists() else None
 
-
-
     context = {
         'product': product,
         'is_favourite': is_favourite,
@@ -90,13 +144,8 @@ def product_detail(request, id, slug=None):
         'has_sizes': sizes.exists(),
         'default_attribute': default_attribute,
         'variant_data': json.dumps(variant_data),
-        }
+    }
     return render(request, 'home/product_detail.html', context)
-
-
-
-
-
 
 
 def product_favourite(request, product_id):
@@ -114,9 +163,6 @@ def product_favourite(request, product_id):
         messages.success(request, f'{product.title} از علاقه‌مندی‌ها حذف شد.')
 
     return redirect(http_referer)
-
-
-
 
 
 def product_favourite_list(request):
