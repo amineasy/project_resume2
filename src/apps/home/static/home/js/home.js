@@ -1,6 +1,4 @@
-// static/home/js/home.js
 document.addEventListener('DOMContentLoaded', function () {
-    // منوی کشویی
     const dropbtn = document.querySelector('.dropbtn');
     const dropdownContent = document.querySelector('.dropdown-content');
 
@@ -17,45 +15,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // اسلایدر پرفروش‌ترین
-    new Swiper('.top-selling-swiper', {
-        slidesPerView: 'auto',
-        spaceBetween: 10, // فاصله کمتر برای جا دادن 5 اسلاید
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-        breakpoints: {
-            900: {
-                slidesPerView: 5, // 5 اسلاید تو دسکتاپ
-            },
-            600: {
-                slidesPerView: 3, // 3 اسلاید تو تبلت
-            },
-            0: {
-                slidesPerView: 2, // 2 اسلاید تو موبایل
-            },
-        },
-    });
-
-    // اسلایدر پربازدیدترین
-    new Swiper('.most-viewed-swiper', {
-        slidesPerView: 'auto',
-        spaceBetween: 10, // فاصله کمتر
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-        breakpoints: {
-            900: {
-                slidesPerView: 5, // 5 اسلاید تو دسکتاپ
-            },
-            600: {
-                slidesPerView: 3, // 3 اسلاید تو تبلت
-            },
-            0: {
-                slidesPerView: 2, // 2 اسلاید تو موبایل
-            },
-        },
+    // مدیریت زیرمنوها
+    const dropdownItems = document.querySelectorAll('.dropdown-item');
+    dropdownItems.forEach(item => {
+        const subcontent = item.querySelector('.dropdown-subcontent');
+        if (subcontent) {
+            item.addEventListener('mouseenter', () => {
+                subcontent.style.display = 'block';
+            });
+            item.addEventListener('mouseleave', () => {
+                subcontent.style.display = 'none';
+            });
+        }
     });
 });

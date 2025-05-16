@@ -17,22 +17,20 @@ def home(request):
     # دریافت دسته‌بندی‌های ریشه
     category = Category.get_root_nodes()
 
-    # دریافت 3 محصول پرفروش با کش
     cache_key_top = 'top_selling_products_home'
     top_selling = cache.get(cache_key_top)
     if top_selling is None:
         print("محاسبه پرفروش‌ترین محصولات برای صفحه اصلی...")
-        top_selling = Product.get_top_selling_products(limit=3)  # فقط 3 تا
+        top_selling = Product.get_top_selling_products(limit=5)
         cache.set(cache_key_top, top_selling, 60 * 15)  # 15 دقیقه کش
     else:
         print("گرفتن پرفروش‌ترین از کش برای صفحه اصلی")
 
-    # دریافت 3 محصول پربازدید با کش
     cache_key_viewed = 'most_viewed_products_home'
     most_viewed = cache.get(cache_key_viewed)
     if most_viewed is None:
         print("محاسبه پربازدیدترین محصولات برای صفحه اصلی...")
-        most_viewed = Product.get_most_viewed_products(limit=3)  # فقط 3 تا
+        most_viewed = Product.get_most_viewed_products(limit=5)
         cache.set(cache_key_viewed, most_viewed, 60 * 15)  # 15 دقیقه کش
     else:
         print("گرفتن پربازدیدترین از کش برای صفحه اصلی")
