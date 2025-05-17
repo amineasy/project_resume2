@@ -21,7 +21,7 @@ def home(request):
     top_selling = cache.get(cache_key_top)
     if top_selling is None:
         print("محاسبه پرفروش‌ترین محصولات برای صفحه اصلی...")
-        top_selling = Product.get_top_selling_products(limit=5)
+        top_selling = Product.get_top_selling_products(limit=6)
         cache.set(cache_key_top, top_selling, 60 * 15)  # 15 دقیقه کش
     else:
         print("گرفتن پرفروش‌ترین از کش برای صفحه اصلی")
@@ -30,7 +30,7 @@ def home(request):
     most_viewed = cache.get(cache_key_viewed)
     if most_viewed is None:
         print("محاسبه پربازدیدترین محصولات برای صفحه اصلی...")
-        most_viewed = Product.get_most_viewed_products(limit=5)
+        most_viewed = Product.get_most_viewed_products(limit=6)
         cache.set(cache_key_viewed, most_viewed, 60 * 15)  # 15 دقیقه کش
     else:
         print("گرفتن پربازدیدترین از کش برای صفحه اصلی")
