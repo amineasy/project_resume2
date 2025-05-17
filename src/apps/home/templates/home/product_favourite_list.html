@@ -17,7 +17,7 @@
             {% for favourite in favourites %}
                 <div class="favourite-card">
                     <div class="favourite-image">
-                        {% with first_image=favourite.product.productimage_set.first %}
+                        {% with first_image=favourite.product.images.first %}
                             <img src="{% if first_image.image %}{{ first_image.image.url }}{% else %}https://via.placeholder.com/200{% endif %}" alt="{{ favourite.product.title }}">
                         {% endwith %}
                     </div>

@@ -39,7 +39,7 @@ class CustomUser(AbstractUser):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='profile')
     slug = models.SlugField(unique=True,blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     profile_pic = models.ImageField(blank=True, null=True)

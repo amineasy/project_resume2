@@ -29,14 +29,13 @@ class LoginForm(forms.Form):
 
 
 class ProfileForm(forms.ModelForm):
-    phone = forms.CharField(label='Phone Number', widget=forms.TextInput(),required=False)
-    email = forms.EmailField(label='Email Address', widget=forms.TextInput(),required=False)
-    first_name = forms.CharField(label='First Name', widget=forms.TextInput(),required=False)
-    last_name = forms.CharField(label='Last Name', widget=forms.TextInput(),required=False)
-    address = forms.CharField(label='Address', widget=forms.TextInput(),required=False)
+    email = forms.EmailField(label='ایمیل', widget=forms.TextInput(),required=False)
+    first_name = forms.CharField(label='نام', widget=forms.TextInput(),required=False)
+    last_name = forms.CharField(label='نام خانوادگی', widget=forms.TextInput(),required=False)
+    address = forms.CharField(label='آدرس', widget=forms.TextInput(),required=False)
 
 
-    bio = forms.CharField(label='Bio', widget=forms.Textarea(),required=False)
+    bio = forms.CharField(label='بیو', widget=forms.Textarea(),required=False)
 
 
     class Meta:

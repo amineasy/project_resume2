@@ -1,37 +1,53 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Profile{% endblock %}
+{% block title %}پروفایل{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/profile.css' %}">
+{% endblock %}
 
 {% block body %}
-    <div id="profile-content" style="display: none;">
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Firstname:</strong> {{ user.first_name }}</p>
-        <p><strong>Lastname:</strong> {{ user.last_name }}</p>
-        <p><strong>Phone Number:</strong> {{ profile.phone }}</p>
-        <p><strong>Address:</strong> {{ profile.address }}</p>
-        <p><strong>Bio:</strong> {{ profile.bio }}</p>
-    </div>
-
-    <div id="loading" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
-        <div>
-            <p>در حال بارگذاری پروفایل...</p>
-            <div style="border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite;"></div>
+    <div id="profile-content">
+        <p><strong>ایمیل:</strong> {{ user.email }}</p>
+        <p><strong>نام:</strong> {{ user.first_name }}</p>
+        <p><strong>نام خانوادگی:</strong> {{ user.last_name }}</p>
+        <p><strong>شماره تلفن:</strong> {{ user.phone }}</p>
+        <p><strong>آدرس:</strong> {{ profile.address }}</p>
+        <p><strong>بیو:</strong> {{ profile.bio }}</p>
+        <div class="dropdown">
+            <button class="dropbtn">گزینه‌ها</button>
+            <div class="dropdown-content">
+                <a href="{% url 'accounts:edit-profile' %}">ویرایش پروفایل</a>
+                <a href="{% url 'accounts:logout' %}">خروج از حساب کاربری</a>
+            </div>
         </div>
     </div>
 
-    <style>
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
+    <div id="loading">
+        <div class="loading-container">
+            <p>در حال بارگذاری پروفایل...</p>
+            <div class="spinner"></div>
+        </div>
+    </div>
 
     <script>
         window.onload = function() {
-            // زمانی که صفحه بارگذاری شد، حالت لودینگ رو مخفی می‌کنیم
-            document.getElementById('loading').style.display = 'none';
-            // و پروفایل رو نمایش میدیم
-            document.getElementById('profile-content').style.display = 'block';
+            try {
+                // مخفی کردن لودینگ
+                const loading = document.getElementById('loading');
+                const profileContent = document.getElementById('profile-content');
+                loading.style.display = 'none';
+                // نمایش پروفایل با انیمیشن
+                profileContent.style.display = 'block';
+                profileContent.classList.add('show');
+            } catch (error) {
+                console.error('خطا در بارگذاری پروفایل:', error);
+                // در صورت خطا، لودینگ را مخفی و پروفایل را نمایش بده
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('profile-content').style.display = 'block';
+            }
         };
     </script>
 {% endblock %}

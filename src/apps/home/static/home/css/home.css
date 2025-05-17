@@ -1,63 +1,86 @@
+/* تنظیمات کلی */
 body {
-    font-family: 'Vazir', Arial, sans-serif;
+    font-family: 'Vazir', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
     padding: 0;
     direction: rtl;
-    background-color: #f5f5f5;
+    line-height: 1.6;
 }
 
+/* هدر و نوار ناوبری */
 header {
-    background-color: #2c3e50;
-    padding: 1rem;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 nav {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
+    padding: 0 1rem;
+    text-align: right;
 }
 
+/* منوی کشویی */
 .dropdown {
     position: relative;
     display: inline-block;
 }
 
 .dropbtn {
-    background-color: #3498db;
-    color: white;
-    padding: 12px 20px;
+    background: transparent;
+    color: #ecf0f1;
+    padding: 12px 24px;
     border: none;
     cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
+    font-size: 1rem;
+    border-radius: 8px;
+    transition: color 0.3s ease, background-color 0.3s ease;
 }
 
 .dropbtn:hover {
-    background-color: #2980b9;
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #fff;
-    min-width: 200px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    z-index: 1;
-    border-radius: 5px;
+    background: #fff;
+    min-width: 220px;
+    border-radius: 8px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    z-index: 100;
     right: 0;
+    top: 100%;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
+    visibility: hidden;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    transition-delay: 0.1s; /* تأخیر کوچک برای باز شدن */
 }
 
 .dropdown-content a {
-    color: #333;
+    color: #2c3e50;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
-    font-size: 14px;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
 }
 
 .dropdown-content a:hover {
-    background-color: #f1f1f1;
+    background-color: #f8f9fa;
 }
 
+/* زیرمنوی کشویی */
 .dropdown-item {
     position: relative;
 }
@@ -65,161 +88,187 @@ nav {
 .dropdown-subcontent {
     display: none;
     position: absolute;
-    background-color: #fff;
-    min-width: 200px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    z-index: 1;
-    border-radius: 5px;
+    background: #fff;
+    min-width: 220px;
+    border-radius: 8px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    z-index: 101;
     right: 100%;
     top: 0;
+    opacity: 0;
+    transform: translateX(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
+    visibility: hidden;
+}
+
+.dropdown-item:hover .dropdown-subcontent {
+    display: block;
+    opacity: 1;
+    transform: translateX(0);
+    visibility: visible;
+    transition-delay: 0.1s; /* تأخیر کوچک برای باز شدن */
 }
 
 .dropdown-subcontent a {
-    color: #333;
+    color: #2c3e50;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
-    font-size: 14px;
+    font-size: 0.9rem;
 }
 
 .dropdown-subcontent a:hover {
-    background-color: #f1f1f1;
+    background-color: #f8f9fa;
 }
 
+/* محصولات */
 main {
-    max-width: 1200px;
-    margin: 2rem auto;
+    max-width: 1280px;
+    margin: 3rem auto;
     padding: 0 1rem;
 }
 
 .products {
-    margin-bottom: 3rem;
+    margin-bottom: 4rem;
 }
 
 h2 {
     color: #2c3e50;
-    font-size: 24px;
-    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: right;
 }
 
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
 }
 
 .product-card {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 1rem;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
     text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .product-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .product-card img {
     max-width: 100%;
-    height: 150px;
+    height: 180px;
     object-fit: cover;
-    border-radius: 5px;
+    border-radius: 8px;
+    margin-bottom: 1rem;
 }
 
 .product-card h3 {
-    font-size: 18px;
+    font-size: 1.2rem;
     color: #2c3e50;
     margin: 0.5rem 0;
+    font-weight: 600;
 }
 
 .product-card .original-price {
-    color: #999;
-    font-size: 14px;
-    text-decoration: line-through !important;
-    margin: 0.2rem 0;
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    text-decoration: line-through;
+    margin: 0.3rem 0;
 }
 
 .product-card .discount-price {
     color: #e74c3c;
-    font-size: 15px;
+    font-size: 1rem;
     font-weight: bold;
-    margin: 0.2rem 0;
+    margin: 0.3rem 0;
 }
 
 .product-card .total-price {
     color: #2c3e50;
-    font-size: 16px;
+    font-size: 1.1rem;
     font-weight: bold;
-    margin: 0.2rem 0;
+    margin: 0.3rem 0;
 }
 
 .btn {
     display: inline-block;
-    background-color: #3498db;
-    color: white;
-    padding: 8px 16px;
+    background: #3498db;
+    color: #fff;
+    padding: 10px 20px;
     text-decoration: none;
-    border-radius: 5px;
-    font-size: 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .btn:hover {
-    background-color: #2980b9;
+    background: #2980b9;
+    transform: scale(1.05);
 }
-
-
 
 .view-all-wrapper {
     text-align: center;
-    margin-top: 15px;
+    margin-top: 2rem;
 }
 
 .view-all-btn {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 6px;
+    background: #27ae60;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
     text-decoration: none;
-    display: inline-block;
-    transition: background-color 0.3s;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .view-all-btn:hover {
-    background-color: #45a049;
+    background: #219653;
+    transform: scale(1.05);
 }
 
-
-
-
-
-
-
-
-
-
-
-
+/* طراحی ریسپانسیو */
 @media (max-width: 768px) {
     .product-grid {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
 
     .dropbtn {
-        padding: 10px 15px;
-        font-size: 14px;
+        padding: 10px 16px;
+        font-size: 0.9rem;
     }
 
     .dropdown-content,
     .dropdown-subcontent {
-        min-width: 160px;
+        min-width: 180px;
     }
 
     .dropdown-subcontent {
         right: 0;
         top: 100%;
     }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    .product-card img {
+        height: 150px;
+    }
 }
 
+@media (max-width: 480px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
 
+    .dropbtn {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+}

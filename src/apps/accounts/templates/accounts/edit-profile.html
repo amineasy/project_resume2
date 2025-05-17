@@ -1,21 +1,20 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %} edit-profile {% endblock %}
+{% block title %}ویرایش پروفایل{% endblock %}
 
-
-
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/edit_profile.css' %}">
+{% endblock %}edit_profile
 
 {% block body %}
-
-
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save Changes</button>
-    </form>
-
-
-
+    <div class="edit-profile-container">
+        <h2>ویرایش پروفایل</h2>
+        <form method="post" class="edit-profile-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="submit-btn">ذخیره تغییرات</button>
+        </form>
+    </div>
 {% endblock %}
-
-

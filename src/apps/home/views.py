@@ -14,7 +14,6 @@ User = get_user_model()
 
 
 def home(request):
-    # دریافت دسته‌بندی‌های ریشه
     category = Category.get_root_nodes()
 
     cache_key_top = 'top_selling_products_home'
