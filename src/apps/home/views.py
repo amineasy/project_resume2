@@ -6,22 +6,30 @@ from django.db.models import Sum
 from django.shortcuts import render, get_object_or_404, redirect
 from apps.accounts.models import Profile
 from apps.home.models import Category, ProductClass, Product, Favourite
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 User = get_user_model()
 
 
 
 
-
 def home(request):
     category = Category.get_root_nodes()
+    products_list = Product.objects.all()
+    paginator = Paginator(products_list, 2)
+    page = request.GET.get('page')
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
 
     cache_key_top = 'top_selling_products_home'
     top_selling = cache.get(cache_key_top)
     if top_selling is None:
-        print("محاسبه پرفروش‌ترین محصولات برای صفحه اصلی...")
         top_selling = Product.get_top_selling_products(limit=6)
-        cache.set(cache_key_top, top_selling, 60 * 15)  # 15 دقیقه کش
+        cache.set(cache_key_top, top_selling, 60 * 15)
     else:
         print("گرفتن پرفروش‌ترین از کش برای صفحه اصلی")
 
@@ -30,16 +38,41 @@ def home(request):
     if most_viewed is None:
         print("محاسبه پربازدیدترین محصولات برای صفحه اصلی...")
         most_viewed = Product.get_most_viewed_products(limit=6)
-        cache.set(cache_key_viewed, most_viewed, 60 * 15)  # 15 دقیقه کش
+        cache.set(cache_key_viewed, most_viewed, 60 * 15)
     else:
         print("گرفتن پربازدیدترین از کش برای صفحه اصلی")
 
     context = {
         'category': category,
         'top_selling': top_selling,
-        'most_viewed': most_viewed
+        'most_viewed': most_viewed,
+        'products': products
     }
-    return render(request, 'home/home.html', context)
+
+    # اگر صفحه ۱ هست، صفحه اصلی رو نشون بده
+    if products.number == 1:
+        return render(request, 'home/home.html', context)
+    # برای صفحه‌های بعدی، فقط محصولات رو نشون بده
+    else:
+        return render(request, 'home/all_products.html', context)
+
+def all_products(request):
+    products_list = Product.objects.all()
+    paginator = Paginator(products_list, 2)
+    page = request.GET.get('page')
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+
+    context = {
+        'products': products,
+        'category': Category.get_root_nodes()
+    }
+    return render(request, 'home/all_products.html', context)
+
 
 def top_selling_products(request):
     # دریافت همه پرفروش‌ترین محصولات با کش
@@ -56,6 +89,7 @@ def top_selling_products(request):
         'top_selling': top_selling
     }
     return render(request, 'home/top_selling.html', context)
+
 
 def most_viewed_products(request):
     # دریافت همه پربازدیدترین محصولات با کش

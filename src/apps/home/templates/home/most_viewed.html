@@ -19,7 +19,6 @@
                     {% endif %}
                     <h3>{{ product.title }}</h3>
                     <p>قیمت: {{ product.total_price }} تومان</p>
-                    <p>بازدید: {{ product.view_count }}</p>
                     <a href="{% url 'home:product_detail' product.id product.slug %}">مشاهده محصول</a>
                 </div>
             {% empty %}

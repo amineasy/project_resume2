@@ -20,9 +20,9 @@
     {% endif %}
 
     <!-- نمایش تصویر دسته‌بندی -->
-    {% if category.categoryimage_set.all %}
+    {% if category.images.all %}
         <h3>تصویر دسته‌بندی</h3>
-        {% for category_image in category.categoryimage_set.all %}
+        {% for category_image in category.images.all %}
             {% if category_image.image %}
                 <img src="{{ category_image.image.url }}" alt="{{ category.title }}" class="category-image" style="max-width: 300px; height: auto;">
             {% endif %}

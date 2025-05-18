@@ -48,7 +48,6 @@
             <div class="view-all-wrapper">
                 <a href="{% url 'home:most_viewed' %}?sort=top-selling" class="btn view-all-btn">مشاهده همه</a>
             </div>
-
         </section>
 
         <section class="products">
@@ -60,7 +59,7 @@
                         <h3>{{ product.title }}</h3>
                         {% if product.discount_price %}
                             <p class="original-price">{{ product.price }} تومان</p>
-                            <p class="discount-price">{{ product.discount_price }} ٪</p>
+                            <p class="discount-price">{{ product.discount_price }} %</p>
                             <p class="total-price">{{ product.total_price }} تومان</p>
                         {% else %}
                             <p class="total-price">{{ product.price }} تومان</p>
@@ -71,11 +70,77 @@
                     <p>محصولی یافت نشد.</p>
                 {% endfor %}
             </div>
-        <div class="view-all-wrapper">
-            <a href="{% url 'home:top_selling' %}?sort=top-selling" class="btn view-all-btn">مشاهده همه</a>
-        </div>
-
+            <div class="view-all-wrapper">
+                <a href="{% url 'home:top_selling' %}?sort=most-viewed" class="btn view-all-btn">مشاهده همه</a>
+            </div>
         </section>
+
+    <section class="products">
+            <h2>همه محصولات</h2>
+            <div class="product-grid">
+                {% for product in products %}
+                    <div class="product-card">
+                        <img src="{{ product.images.first.image.url }}" alt="{{ product.title }}">
+                        <h3>{{ product.title }}</h3>
+                        {% if product.discount_price %}
+                            <p class="original-price">{{ product.price }} تومان</p>
+                            <p class="discount-price">{{ product.discount_price }} %</p>
+                            <p class="total-price">{{ product.total_price }} تومان</p>
+                        {% else %}
+                            <p class="total-price">{{ product.price }} تومان</p>
+                        {% endif %}
+                        <a href="{% url 'home:product_detail' product.id product.slug %}" class="btn">مشاهده</a>
+                    </div>
+                {% empty %}
+                    <p>محصولی یافت نشد.</p>
+                {% endfor %}
+            </div>
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- Pagination برای تمام محصولات -->
+        {% if products.has_other_pages %}
+            <div class="pagination">
+                {% if products.has_previous %}
+                    <a href="?page={{ products.previous_page_number }}">« قبلی</a>
+                {% else %}
+                    <span>« قبلی</span>
+                {% endif %}
+
+                {% for num in products.paginator.page_range %}
+                    {% if products.number == num %}
+                        <span>{{ num }}</span>
+                    {% else %}
+                        <a href="?page={{ num }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if products.has_next %}
+                    <a href="?page={{ products.next_page_number }}">بعدی »</a>
+                {% else %}
+                    <span>بعدی »</span>
+                {% endif %}
+            </div>
+        {% endif %}
     </main>
 
     <script src="{% static 'home/js/home.js' %}"></script>

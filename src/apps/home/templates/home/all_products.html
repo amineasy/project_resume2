@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'home/css/home.css' %}">
+{% endblock %}
+
+{% block title %}همه محصولات{% endblock %}
+
+{% block body %}
+    <header>
+        <nav>
+            <div class="dropdown">
+                <button class="dropbtn">دسته‌بندی‌ها</button>
+                <div class="dropdown-content">
+                    {% for node in category %}
+                        {% include "home/category_dropdown.html" with node=node %}
+                    {% empty %}
+                        <p>هیچ دسته‌بندی‌ای یافت نشد.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="products">
+            <div class="product-grid">
+                {% for product in products %}
+                    <div class="product-card">
+                        <img src="{{ product.images.first.image.url }}" alt="{{ product.title }}">
+                        <h3>{{ product.title }}</h3>
+                        {% if product.discount_price %}
+                            <p class="original-price">{{ product.price }} تومان</p>
+                            <p class="discount-price">{{ product.discount_price }} %</p>
+                            <p class="total-price">{{ product.total_price }} تومان</p>
+                        {% else %}
+                            <p class="total-price">{{ product.price }} تومان</p>
+                        {% endif %}
+                        <a href="{% url 'home:product_detail' product.id product.slug %}" class="btn">مشاهده</a>
+                    </div>
+                {% empty %}
+                    <p>محصولی یافت نشد.</p>
+                {% endfor %}
+            </div>
+
+            <!-- لینک‌های Pagination -->
+            {% if products.has_other_pages %}
+                <div class="pagination">
+                    {% if products.has_previous %}
+                        <a href="?page={{ products.previous_page_number }}">« قبلی</a>
+                    {% else %}
+                        <span>« قبلی</span>
+                    {% endif %}
+
+                    {% for num in products.paginator.page_range %}
+                        {% if products.number == num %}
+                            <span>{{ num }}</span>
+                        {% else %}
+                            <a href="{% if num == 1 %}{% url 'home:home' %}{% else %}?page={{ num }}{% endif %}">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if products.has_next %}
+                        <a href="?page={{ products.next_page_number }}">بعدی »</a>
+                    {% else %}
+                        <span>بعدی »</span>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <script src="{% static 'home/js/home.js' %}"></script>
+{% endblock %}

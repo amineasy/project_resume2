@@ -54,15 +54,21 @@ class Product(models.Model):
     def get_most_viewed_products(cls, limit=100):
         return cls.objects.order_by('-view_count')[:limit]
 
-
-
-
-
     def get_total_price(self):
         if self.discount_price:
             discount_amount = (self.discount_price / 100) * self.price
-            return self.price - discount_amount
+            total = self.price - discount_amount
+        else:
+            total = self.price
+        round(total, -3)
+
+    @property
+    def get_display_price(self):
+        first_attr = self.attributes_related.first()
+        if first_attr and first_attr.get_total_price():
+            return first_attr.get_total_price()
         return self.price
+
 
 
     def __str__(self):
@@ -97,10 +103,11 @@ class ProductAttribute(models.Model):
 
         if discount:
             discount_amount = (discount / 100) * base_price
-            return base_price - discount_amount
+            final_price = base_price - discount_amount
+        else:
+            final_price = base_price
 
-        return base_price
-
+        return round(final_price / 1000) * 1000
 
     def get_price(self):
         if self.price is not None:
