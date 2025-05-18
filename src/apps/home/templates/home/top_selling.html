@@ -18,7 +18,23 @@
                         <img src="{{ product.images.first.image.url }}" alt="{{ product.title }}" style="max-width: 100%;">
                     {% endif %}
                     <h3>{{ product.title }}</h3>
-                    <p>قیمت: {{ product.get_display_price  }} تومان</p>
+                     {% with attr=product.attributes_related.first %}
+                        {% if attr %}
+                            {% if attr.discount_price %}
+                                <p class="original-price">{{ attr.price }} تومان</p>
+                                <p class="discount-price">{{ attr.discount_price }}٪ تخفیف</p>
+                                <p class="total-price">{{ attr.get_total_price }} تومان</p>
+                            {% else %}
+                                <p class="total-price">{{ attr.get_total_price }} تومان</p>
+                            {% endif %}
+                        {% elif product.discount_price %}
+                            <p class="original-price">{{ product.price }} تومان</p>
+                            <p class="discount-price">{{ product.discount_price }}٪ تخفیف</p>
+                            <p class="total-price">{{ product.get_total_price }} تومان</p>
+                        {% else %}
+                            <p class="total-price">{{ product.price }} تومان</p>
+                        {% endif %}
+                    {% endwith %}
 
 
 

@@ -56,11 +56,14 @@ class Product(models.Model):
 
     def get_total_price(self):
         if self.discount_price:
-            discount_amount = (self.discount_price / 100) * self.price
-            total = self.price - discount_amount
+            discount_price = self.discount_price
+            div = (discount_price / 100)*self.price
+            final = self.price - div
+            return round(final / 1000) * 1000
+
         else:
-            total = self.price
-        round(total, -3)
+            return self.price
+
 
     @property
     def get_display_price(self):

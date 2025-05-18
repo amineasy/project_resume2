@@ -336,3 +336,22 @@ h2 {
     border: 1px solid #5a6268;
     cursor: not-allowed;
 }
+
+
+.original-price {
+    color: #999;
+    text-decoration: line-through;
+    font-size: 0.95rem;
+}
+
+.discount-price {
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.total-price {
+    color: #2c3e50;
+    font-weight: bold;
+    font-size: 1.1rem;
+}

@@ -32,14 +32,28 @@
                     <div class="product-card">
                         <img src="{{ product.images.first.image.url }}" alt="{{ product.title }}">
                         <h3>{{ product.title }}</h3>
-                        {% if product.discount_price %}
+                   {% with attr=product.attributes_related.first %}
+                        {% if attr %}
+                            {% if attr.discount_price %}
+                                <p class="original-price">{{ attr.price }} تومان</p>
+                                <p class="discount-price">{{ attr.discount_price }}٪ تخفیف</p>
+                                <p class="total-price">{{ attr.get_total_price }} تومان</p>
+                            {% else %}
+                                <p class="total-price">{{ attr.get_total_price }} تومان</p>
+                            {% endif %}
+                        {% elif product.discount_price %}
                             <p class="original-price">{{ product.price }} تومان</p>
-                            <p class="discount-price">{{ product.discount_price }} %</p>
-                            <p class="total-price">{{ product.total_price }} تومان</p>
+                            <p class="discount-price">{{ product.discount_price }}٪ تخفیف</p>
+                            <p class="total-price">{{ product.get_total_price }} تومان</p>
                         {% else %}
                             <p class="total-price">{{ product.price }} تومان</p>
                         {% endif %}
-                        <a href="{% url 'home:product_detail' product.id product.slug %}" class="btn">مشاهده</a>
+                    {% endwith %}
+                    <a href="{% url 'home:product_detail' product.id product.slug %}" class="btn">مشاهده</a>
+
+
+
+
                     </div>
                 {% empty %}
                     <p>محصولی یافت نشد.</p>
@@ -57,13 +71,23 @@
                     <div class="product-card">
                         <img src="{{ product.images.first.image.url }}" alt="{{ product.title }}">
                         <h3>{{ product.title }}</h3>
-                        {% if product.discount_price %}
+                        {% with attr=product.attributes_related.first %}
+                        {% if attr %}
+                            {% if attr.discount_price %}
+                                <p class="original-price">{{ attr.price }} تومان</p>
+                                <p class="discount-price">{{ attr.discount_price }}٪ تخفیف</p>
+                                <p class="total-price">{{ attr.get_total_price }} تومان</p>
+                            {% else %}
+                                <p class="total-price">{{ attr.get_total_price }} تومان</p>
+                            {% endif %}
+                        {% elif product.discount_price %}
                             <p class="original-price">{{ product.price }} تومان</p>
-                            <p class="discount-price">{{ product.discount_price }} %</p>
-                            <p class="total-price">{{ product.total_price }} تومان</p>
+                            <p class="discount-price">{{ product.discount_price }}٪ تخفیف</p>
+                            <p class="total-price">{{ product.get_total_price }} تومان</p>
                         {% else %}
                             <p class="total-price">{{ product.price }} تومان</p>
                         {% endif %}
+                    {% endwith %}
                         <a href="{% url 'home:product_detail' product.id product.slug %}" class="btn">مشاهده</a>
                     </div>
                 {% empty %}
@@ -82,13 +106,23 @@
                     <div class="product-card">
                         <img src="{{ product.images.first.image.url }}" alt="{{ product.title }}">
                         <h3>{{ product.title }}</h3>
-                        {% if product.discount_price %}
+                         {% with attr=product.attributes_related.first %}
+                        {% if attr %}
+                            {% if attr.discount_price %}
+                                <p class="original-price">{{ attr.price }} تومان</p>
+                                <p class="discount-price">{{ attr.discount_price }}٪ تخفیف</p>
+                                <p class="total-price">{{ attr.get_total_price }} تومان</p>
+                            {% else %}
+                                <p class="total-price">{{ attr.get_total_price }} تومان</p>
+                            {% endif %}
+                        {% elif product.discount_price %}
                             <p class="original-price">{{ product.price }} تومان</p>
-                            <p class="discount-price">{{ product.discount_price }} %</p>
-                            <p class="total-price">{{ product.total_price }} تومان</p>
+                            <p class="discount-price">{{ product.discount_price }}٪ تخفیف</p>
+                            <p class="total-price">{{ product.get_total_price }} تومان</p>
                         {% else %}
                             <p class="total-price">{{ product.price }} تومان</p>
                         {% endif %}
+                    {% endwith %}
                         <a href="{% url 'home:product_detail' product.id product.slug %}" class="btn">مشاهده</a>
                     </div>
                 {% empty %}
