@@ -1,6 +1,19 @@
 <nav class="navbar bg-light p-3 shadow-sm">
     <div class="container d-flex justify-content-between align-items-center">
-        <a href="{% url 'home:home' %}" class="navbar-brand"><i class="bi bi-house" style="font-size: 1.5rem;"></i></a>
+        <!-- بخش هوم و فرم جستجو -->
+        <div class="d-flex align-items-center">
+            <a href="{% url 'home:home' %}" class="navbar-brand me-3">
+                <i class="bi bi-house" style="font-size: 1.5rem;"></i>
+            </a>
+            <!-- فرم جستجو -->
+            <form class="d-flex" method="GET" action="{% url 'home:search' %}">
+                <input class="form-control me-2" type="search" name="q" placeholder="جستجو..." aria-label="Search" style="width: 200px;">
+                <button class="btn btn-outline-secondary" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+        </div>
+        <!-- منوی نویگیشن -->
         <ul class="nav">
             <li class="nav-item">
                 {% if request.user.is_authenticated %}
@@ -14,29 +27,16 @@
                 {% endif %}
             </li>
             <li class="nav-item">
-                    <a class="nav-link" href="{% url 'cart:cart_view' %}">
-                        <i class="bi bi-cart"></i> سبد خرید
-                    </a>
-
+                <a class="nav-link" href="{% url 'cart:cart_view' %}">
+                    <i class="bi bi-cart"></i> سبد خرید
+                </a>
             </li>
-             {% if request.user.is_authenticated %}
+            {% if request.user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'accounts:profile' slug=navbar_profile.slug %}">
-                        <i class="bi bi-box-arrow-right"></i> پروفایل
+                        <i class="bi bi-person"></i> پروفایل
                     </a>
                 </li>
-
-            {% endif %}
-
-
-
-
-
-
-
-
-
-            {% if request.user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'accounts:logout' %}">
                         <i class="bi bi-box-arrow-right"></i> خروج
@@ -49,9 +49,6 @@
                     </a>
                 </li>
             {% endif %}
-
-
-
         </ul>
     </div>
 </nav>

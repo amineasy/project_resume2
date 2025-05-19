@@ -16,4 +16,6 @@ urlpatterns = [
     path('favourites/', views.product_favourite_list, name='product_favourite_list'),
     path('top-selling/', views.top_selling_products, name='top_selling'),
     path('most-viewed/', views.most_viewed_products, name='most_viewed'),
+
+    path('search/', views.search, name='search'),
 ]

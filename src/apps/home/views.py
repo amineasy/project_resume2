@@ -202,3 +202,16 @@ def product_favourite_list(request):
     favourites = Favourite.objects.filter(user=request.user)
     context = {'favourites': favourites}
     return render(request, 'home/product_favourite_list.html', context)
+
+
+
+
+
+def search(request):
+    query = request.GET.get('q')
+    if query:
+        result = Product.objects.filter(title__icontains=query)
+    else:
+        result = Product.objects.none()
+    context =  {'products': result}
+    return render(request,'home/search.html',context)
