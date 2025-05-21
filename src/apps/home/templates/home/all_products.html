@@ -1,8 +1,8 @@
+<!-- templates/home/all_products.html -->
 {% extends 'base.html' %}
 {% load static %}
 
 {% block css %}
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'home/css/home.css' %}">
 {% endblock %}
 
@@ -14,63 +14,115 @@
             <div class="dropdown">
                 <button class="dropbtn">دسته‌بندی‌ها</button>
                 <div class="dropdown-content">
-                    {% for node in category %}
-                        {% include "home/category_dropdown.html" with node=node %}
-                    {% empty %}
-                        <p>هیچ دسته‌بندی‌ای یافت نشد.</p>
-                    {% endfor %}
+                    <p>دسته‌بندی‌ای یافت نشد.</p>
                 </div>
             </div>
         </nav>
     </header>
 
-    <main>
-        <section class="products">
-            <div class="product-grid">
-                {% for product in products %}
-                    <div class="product-card">
-                        <img src="{{ product.images.first.image.url }}" alt="{{ product.title }}">
-                        <h3>{{ product.title }}</h3>
-                        {% if product.discount_price %}
-                            <p class="original-price">{{ product.price }} تومان</p>
-                            <p class="discount-price">{{ product.discount_price }} %</p>
-                            <p class="total-price">{{ product.total_price }} تومان</p>
-                        {% else %}
-                            <p class="total-price">{{ product.price }} تومان</p>
-                        {% endif %}
-                        <a href="{% url 'home:product_detail' product.id product.slug %}" class="btn">مشاهده</a>
+    <main class="container mt-4">
+        <div class="row">
+            <!-- ستون کناری برای فرم فیلتر -->
+            <aside class="col-md-3 order-md-2">
+                <section class="filters">
+                    <h2 class="section-title">فیلتر محصولات</h2>
+                    <form method="get" class="filter-form">
+                        <div class="mb-3">
+                            <label class="form-label">محدوده قیمت (تومان)</label>
+                            <div id="price-slider"></div>
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <input type="number" name="price_min" id="price_min" class="form-control" placeholder="حداقل" value="{{ filters.form.price_min.value|default_if_none:'' }}">
+                                </div>
+                                <div class="col">
+                                    <input type="number" name="price_max" id="price_max" class="form-control" placeholder="حداکثر" value="{{ filters.form.price_max.value|default_if_none:'' }}">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">اعمال فیلتر</button>
+                    </form>
+                </section>
+            </aside>
+
+            <!-- بخش اصلی برای محصولات -->
+            <div class="col-md-9 order-md-1">
+                <section class="products">
+                    <h2 class="section-title all-products">همه محصولات</h2>
+                    <div class="product-grid">
+                        {% for product in products %}
+                            <div class="product-card">
+                                <img src="{% static 'images/placeholder.jpg' %}" alt="{{ product.title }}">
+                                <h3>{{ product.title }}</h3>
+                                <p class="total-price">{{ product.price }} تومان</p>
+                                <a href="{{ product.get_absolute_url }}" class="btn">مشاهده</a>
+                            </div>
+                        {% empty %}
+                            <p>محصولی یافت نشد.</p>
+                        {% endfor %}
                     </div>
-                {% empty %}
-                    <p>محصولی یافت نشد.</p>
-                {% endfor %}
+
+                    <!-- صفحه‌بندی -->
+                    {% if products.has_other_pages %}
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                {% if products.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link prev" href="?page={{ products.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">« قبلی</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link prev">« قبلی</span>
+                                    </li>
+                                {% endif %}
+
+                                {% for num in products.paginator.page_range %}
+                                    <li class="page-item {% if products.number == num %}active{% endif %}">
+                                        <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                                    </li>
+                                {% endfor %}
+
+                                {% if products.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link next" href="?page={{ products.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">بعدی »</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link next">بعدی »</span>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    {% endif %}
+                </section>
             </div>
-
-            <!-- لینک‌های Pagination -->
-            {% if products.has_other_pages %}
-                <div class="pagination">
-                    {% if products.has_previous %}
-                        <a href="?page={{ products.previous_page_number }}">« قبلی</a>
-                    {% else %}
-                        <span>« قبلی</span>
-                    {% endif %}
-
-                    {% for num in products.paginator.page_range %}
-                        {% if products.number == num %}
-                            <span>{{ num }}</span>
-                        {% else %}
-                            <a href="{% if num == 1 %}{% url 'home:home' %}{% else %}?page={{ num }}{% endif %}">{{ num }}</a>
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if products.has_next %}
-                        <a href="?page={{ products.next_page_number }}">بعدی »</a>
-                    {% else %}
-                        <span>بعدی »</span>
-                    {% endif %}
-                </div>
-            {% endif %}
-        </section>
+        </div>
     </main>
+{% endblock %}
 
-    <script src="{% static 'home/js/home.js' %}"></script>
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        const priceMin = {{ filters.form.price_min.value|default_if_none:"0"|default:"0" }};
+        const priceMax = {{ filters.form.price_max.value|default_if_none:"1000000"|default:"1000000" }};
+
+        $("#price-slider").slider({
+            range: true,
+            min: 0,
+            max: 1000000,
+            values: [priceMin, priceMax],
+            slide: function(event, ui) {
+                $("#price_min").val(ui.values[0]);
+                $("#price_max").val(ui.values[1]);
+            }
+        });
+
+        $("#price_min").on("input", function() {
+            $("#price-slider").slider("values", 0, $(this).val());
+        });
+        $("#price_max").on("input", function() {
+            $("#price-slider").slider("values", 1, $(this).val());
+        });
+    });
+</script>
+
 {% endblock %}

@@ -4,9 +4,9 @@ from apps.accounts.models import Profile
 
 
 class RegisterForm(forms.Form):
-    username = forms.CharField(label='Username', widget=forms.TextInput())
-    password = forms.CharField(label='Password', widget=forms.PasswordInput())
-    confirm_password = forms.CharField(label='Confirm Password', widget=forms.PasswordInput())
+    username = forms.CharField(label='نام کاربری', widget=forms.TextInput())
+    password = forms.CharField(label='رمز', widget=forms.PasswordInput())
+    confirm_password = forms.CharField(label='تایید رمز', widget=forms.PasswordInput())
 
 
     def clean_confirm_password(self):
@@ -21,8 +21,8 @@ class RegisterForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label='Username', widget=forms.TextInput())
-    password = forms.CharField(label='Password', widget=forms.PasswordInput())
+    username = forms.CharField(label='نام کاربری', widget=forms.TextInput())
+    password = forms.CharField(label='رمز', widget=forms.PasswordInput())
 
 
 

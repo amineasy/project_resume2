@@ -1,163 +1,43 @@
-/* تنظیمات کلی */
+/* ساختار اصلی */
 body {
-    font-family: 'Vazir', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    margin: 0;
-    padding: 0;
-    direction: rtl;
-    line-height: 1.6;
-}
-
-/* هدر و نوار ناوبری */
-header {
-    background: linear-gradient(135deg, #2c3e50, #34495e);
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-nav {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 1rem;
-    text-align: right;
-}
-
-/* منوی کشویی */
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropbtn {
-    background: transparent;
-    color: #ecf0f1;
-    padding: 12px 24px;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    border-radius: 8px;
-    transition: color 0.3s ease, background-color 0.3s ease;
-}
-
-.dropbtn:hover {
-    color: #fff;
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background: #fff;
-    min-width: 220px;
-    border-radius: 8px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-    z-index: 100;
-    right: 0;
-    top: 100%;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
-    visibility: hidden;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-    visibility: visible;
-    transition-delay: 0.1s; /* تأخیر کوچک برای باز شدن */
-}
-
-.dropdown-content a {
-    color: #2c3e50;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease;
-}
-
-.dropdown-content a:hover {
+    font-family: Vazirmatn, sans-serif;
     background-color: #f8f9fa;
+    color: #212529;
 }
 
-/* زیرمنوی کشویی */
-.dropdown-item {
-    position: relative;
+/* عنوان‌ها */
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-bottom: 2px solid #0d6efd;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    color: #0d6efd;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.dropdown-subcontent {
-    display: none;
-    position: absolute;
-    background: #fff;
-    min-width: 220px;
-    border-radius: 8px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-    z-index: 101;
-    right: 100%;
-    top: 0;
-    opacity: 0;
-    transform: translateX(10px);
-    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
-    visibility: hidden;
-}
-
-.dropdown-item:hover .dropdown-subcontent {
-    display: block;
-    opacity: 1;
-    transform: translateX(0);
-    visibility: visible;
-    transition-delay: 0.1s; /* تأخیر کوچک برای باز شدن */
-}
-
-.dropdown-subcontent a {
-    color: #2c3e50;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    font-size: 0.9rem;
-}
-
-.dropdown-subcontent a:hover {
-    background-color: #f8f9fa;
-}
-
-/* محصولات */
-main {
-    max-width: 1280px;
-    margin: 3rem auto;
-    padding: 0 1rem;
-}
-
-.products {
-    margin-bottom: 4rem;
-}
-
-h2 {
-    color: #2c3e50;
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 2rem;
-    text-align: right;
-}
-
+/* شبکه‌ی محصولات */
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
 }
 
+/* کارت محصول */
 .product-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 1.5rem;
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.06);
+    padding: 1rem;
     text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .product-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
 }
 
 .product-card img {
@@ -165,193 +45,170 @@ h2 {
     height: 180px;
     object-fit: cover;
     border-radius: 8px;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
-.product-card h3 {
-    font-size: 1.2rem;
-    color: #2c3e50;
-    margin: 0.5rem 0;
-    font-weight: 600;
-}
-
-.product-card .original-price {
-    color: #7f8c8d;
-    font-size: 0.9rem;
-    text-decoration: line-through;
-    margin: 0.3rem 0;
-}
-
-.product-card .discount-price {
-    color: #e74c3c;
-    font-size: 1rem;
-    font-weight: bold;
-    margin: 0.3rem 0;
-}
-
-.product-card .total-price {
-    color: #2c3e50;
-    font-size: 1.1rem;
-    font-weight: bold;
-    margin: 0.3rem 0;
-}
-
-.btn {
-    display: inline-block;
-    background: #3498db;
-    color: #fff;
-    padding: 10px 20px;
-    text-decoration: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.btn:hover {
-    background: #2980b9;
-    transform: scale(1.05);
-}
-
-.view-all-wrapper {
-    text-align: center;
-    margin-top: 2rem;
-}
-
-.view-all-btn {
-    background: #27ae60;
-    color: #fff;
-    padding: 12px 24px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 1rem;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.view-all-btn:hover {
-    background: #219653;
-    transform: scale(1.05);
-}
-
-/* طراحی ریسپانسیو */
-@media (max-width: 768px) {
-    .product-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
-
-    .dropbtn {
-        padding: 10px 16px;
-        font-size: 0.9rem;
-    }
-
-    .dropdown-content,
-    .dropdown-subcontent {
-        min-width: 180px;
-    }
-
-    .dropdown-subcontent {
-        right: 0;
-        top: 100%;
-    }
-
-    h2 {
-        font-size: 1.5rem;
-    }
-
-    .product-card img {
-        height: 150px;
-    }
-}
-
-@media (max-width: 480px) {
-    .product-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .dropbtn {
-        padding: 8px 12px;
-        font-size: 0.85rem;
-    }
-}
-
-
-
-
-
-.pagination {
-    margin: 30px 0;
-    text-align: center;
-    font-family: Arial, sans-serif;
-}
-
-.pagination a, .pagination span {
-    display: inline-block;
-    margin: 0 8px;
-    padding: 10px 15px;
-    text-decoration: none;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: all 0.3s ease;
-}
-
-/* استایل لینک‌های معمولی (شماره صفحات) */
-.pagination a {
-    background-color: #f8f9fa;
-    color: #333;
-    border: 1px solid #ccc;
-}
-
-.pagination a:hover {
-    background-color: #e0e0e0;
-    border-color: #aaa;
-    transform: translateY(-2px);
-}
-
-/* استایل صفحه فعال */
-.pagination span {
-    background-color: #007bff;
-    color: white;
-    border: 1px solid #007bff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-/* استایل دکمه‌های بعدی و قبلی */
-.pagination a.prev, .pagination a.next {
-    padding: 10px 20px;
-    font-weight: bold;
-    background-color: #28a745;
-    color: white;
-    border: 1px solid #218838;
-}
-
-.pagination a.prev:hover, .pagination a.next:hover {
-    background-color: #218838;
-    border-color: #1e7e34;
-    transform: translateY(-2px);
-}
-
-/* غیرفعال کردن دکمه‌های قبلی/بعدی */
-.pagination span.prev, .pagination span.next {
-    background-color: #6c757d;
-    color: white;
-    border: 1px solid #5a6268;
-    cursor: not-allowed;
-}
-
-
+/* قیمت‌ها */
 .original-price {
-    color: #999;
     text-decoration: line-through;
-    font-size: 0.95rem;
+    color: #888;
+    font-size: 0.9rem;
 }
 
 .discount-price {
-    color: #e74c3c;
+    color: #dc3545;
     font-weight: bold;
-    font-size: 0.95rem;
+    font-size: 1rem;
 }
 
 .total-price {
-    color: #2c3e50;
-    font-weight: bold;
+    color: #28a745;
     font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* دکمه‌ها */
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #0d6efd;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+    font-weight: 500;
+}
+
+.btn:hover {
+    background-color: #084298;
+}
+
+/* دکمه مشاهده همه */
+.view-all-wrapper {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.view-all-btn {
+    margin-top: 0.5rem;
+}
+
+/* صفحه‌بندی */
+.pagination {
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.page-item .page-link {
+    color: rgba(13, 117, 253, 0.77);
+    border: none;
+    background: transparent;
+    padding: 0.5rem 0.75rem;
+}
+
+.page-item.active .page-link {
+    background-color: #0d3dfd;
+    color: white;
+    border-radius: 8px;
+}
+
+.page-item.disabled .page-link {
+    color: #aaa;
+}
+/* برای dropdown اصلی */
+
+
+
+/* ساختار منوی دسته‌بندی چندسطحی */
+.category-menu {
+    direction: rtl;
+    position: relative;
+    display: inline-block;
+    margin: 1rem;
+    font-family: Vazirmatn, sans-serif;
+}
+
+.dropbtn {
+    background-color: #5394ac;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: white;
+    min-width: 200px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 999;
+    border-radius: 8px;
+    padding: 0.5rem;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-item {
+    position: relative;
+    padding: 0.5rem;
+    text-align: right;
+}
+
+.dropdown-item > a {
+    color: #212529;
+    text-decoration: none;
+    padding: 6px 12px;
+    display: block;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item > a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown-submenu {
+    position: absolute;
+    right: 100%;
+    top: 0;
+    background-color: white;
+    min-width: 180px;
+    display: none;
+    padding: 0.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.dropdown-item:hover > .dropdown-submenu {
+    display: block;
+}
+
+
+
+/* واکنش‌گرا */
+@media (max-width: 768px) {
+    .section-title {
+        font-size: 1.25rem;
+    }
+
+    .product-card img {
+        height: 140px;
+    }
+
+    .dropbtn {
+        width: 100%;
+    }
 }

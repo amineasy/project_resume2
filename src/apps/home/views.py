@@ -2,10 +2,12 @@ import json
 from django.core.cache import cache
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.db.models import Sum
+from django.db.models import Sum, OuterRef, Subquery, F
+from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404, redirect
 from apps.accounts.models import Profile
-from apps.home.models import Category, ProductClass, Product, Favourite
+from apps.home.filters import ProductFilter
+from apps.home.models import Category, ProductClass, Product, Favourite, ProductAttribute
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 User = get_user_model()
@@ -14,64 +16,59 @@ User = get_user_model()
 
 
 def home(request):
+    # دسته‌بندی‌ها
     category = Category.get_root_nodes()
-    products_list = Product.objects.all()
-    paginator = Paginator(products_list, 2)
-    page = request.GET.get('page')
-    try:
-        products = paginator.page(page)
-    except PageNotAnInteger:
-        products = paginator.page(1)
-    except EmptyPage:
-        products = paginator.page(paginator.num_pages)
 
+    # قیمت مؤثر (attribute یا price)
+    first_attr_price = ProductAttribute.objects.filter(
+        product=OuterRef('pk')
+    ).values('price')[:1]
+
+    products_list = Product.objects.annotate(
+        effective_price=Coalesce(
+            Subquery(first_attr_price),
+            F('price')
+        )
+    )
+
+    # فیلتر
+    products_filter = ProductFilter(request.GET, queryset=products_list)
+    filtered_products = products_filter.qs
+
+    # صفحه‌بندی
+    paginator = Paginator(filtered_products, 3)  # تعداد در هر صفحه
+    page = request.GET.get('page')
+    products = paginator.get_page(page)
+
+    # کش برای پرفروش‌ترین و پربازدیدترین
     cache_key_top = 'top_selling_products_home'
     top_selling = cache.get(cache_key_top)
     if top_selling is None:
         top_selling = Product.get_top_selling_products(limit=6)
         cache.set(cache_key_top, top_selling, 60 * 15)
-    else:
-        print("گرفتن پرفروش‌ترین از کش برای صفحه اصلی")
 
     cache_key_viewed = 'most_viewed_products_home'
     most_viewed = cache.get(cache_key_viewed)
     if most_viewed is None:
-        print("محاسبه پربازدیدترین محصولات برای صفحه اصلی...")
         most_viewed = Product.get_most_viewed_products(limit=6)
         cache.set(cache_key_viewed, most_viewed, 60 * 15)
-    else:
-        print("گرفتن پربازدیدترین از کش برای صفحه اصلی")
+
+    is_filter_active = any(request.GET.get(param) for param in ['price_min', 'price_max'])
 
     context = {
         'category': category,
         'top_selling': top_selling,
         'most_viewed': most_viewed,
-        'products': products
-    }
-
-    # اگر صفحه ۱ هست، صفحه اصلی رو نشون بده
-    if products.number == 1:
-        return render(request, 'home/home.html', context)
-    # برای صفحه‌های بعدی، فقط محصولات رو نشون بده
-    else:
-        return render(request, 'home/all_products.html', context)
-
-def all_products(request):
-    products_list = Product.objects.all()
-    paginator = Paginator(products_list, 2)
-    page = request.GET.get('page')
-    try:
-        products = paginator.page(page)
-    except PageNotAnInteger:
-        products = paginator.page(1)
-    except EmptyPage:
-        products = paginator.page(paginator.num_pages)
-
-    context = {
         'products': products,
-        'category': Category.get_root_nodes()
+        'products_filter': products_filter,
+        'is_filter_active': is_filter_active
     }
-    return render(request, 'home/all_products.html', context)
+    return render(request, 'home/home.html', context)
+
+
+
+
+
 
 
 def top_selling_products(request):
@@ -204,14 +201,15 @@ def product_favourite_list(request):
     return render(request, 'home/product_favourite_list.html', context)
 
 
-
-
-
 def search(request):
+    http_referer = request.META.get('HTTP_REFERER', 'home:home')
     query = request.GET.get('q')
-    if query:
-        result = Product.objects.filter(title__icontains=query)
+    if not query:
+        messages.error(request, 'لطفا چیزی وارد کنید', )
+        return redirect(http_referer)
+
     else:
-        result = Product.objects.none()
-    context =  {'products': result}
-    return render(request,'home/search.html',context)
+        result = Product.objects.filter(title__icontains=query)
+
+    context = {'products': result}
+    return render(request, 'home/search.html', context)

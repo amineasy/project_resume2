@@ -1,20 +1,19 @@
-/* تنظیمات کلی */
+/* base.css */
 * {
-    box-sizing: border-box; /* اطمینان از محاسبه صحیح عرض و ارتفاع */
+    box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Vazirmatn', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f5f5f5; /* پس‌زمینه روشن برای ظاهر بهتر */
+    background-color: #f8f9fa;
 }
 
-/* استایل عمومی برای تصاویر */
 img {
-    max-width: 100%; /* جلوگیری از بیرون‌زدگی تصاویر */
-    height: auto; /* حفظ نسبت تصویر */
-    display: block; /* حذف حاشیه‌های ناخواسته */
+    max-width: 100%;
+    height: auto;
+    display: block;
 }
 
 a {
@@ -34,9 +33,9 @@ header {
 }
 
 section {
-    max-width: 1000px; /* افزایش عرض برای جا دادن کارت‌های بیشتر */
+    max-width: 1000px;
     margin: 15px auto;
-    padding: 10px; /* کاهش پدینگ برای فضای بیشتر */
+    padding: 10px;
     background-color: #ffffff;
     border-radius: 6px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
