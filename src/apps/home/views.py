@@ -2,7 +2,7 @@ import json
 from django.core.cache import cache
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.db.models import Sum, OuterRef, Subquery, F
+from django.db.models import Sum, OuterRef, Subquery, F, Max, Min
 from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404, redirect
 from apps.accounts.models import Profile
@@ -16,10 +16,8 @@ User = get_user_model()
 
 
 def home(request):
-    # دسته‌بندی‌ها
     category = Category.get_root_nodes()
 
-    # قیمت مؤثر (attribute یا price)
     first_attr_price = ProductAttribute.objects.filter(
         product=OuterRef('pk')
     ).values('price')[:1]
@@ -31,16 +29,21 @@ def home(request):
         )
     )
 
-    # فیلتر
+    price_agg = products_list.aggregate(
+        min_price=Min('effective_price'),
+        max_price=Max('effective_price')
+    )
+    min_price = (price_agg['min_price'] or 0)
+    max_price = (price_agg['max_price'] or 1000000) + 100000
+
+    # ساخت فیلتر با کوئری‌ست annotated
     products_filter = ProductFilter(request.GET, queryset=products_list)
     filtered_products = products_filter.qs
 
-    # صفحه‌بندی
-    paginator = Paginator(filtered_products, 3)  # تعداد در هر صفحه
+    paginator = Paginator(filtered_products, 3)
     page = request.GET.get('page')
     products = paginator.get_page(page)
 
-    # کش برای پرفروش‌ترین و پربازدیدترین
     cache_key_top = 'top_selling_products_home'
     top_selling = cache.get(cache_key_top)
     if top_selling is None:
@@ -61,7 +64,9 @@ def home(request):
         'most_viewed': most_viewed,
         'products': products,
         'products_filter': products_filter,
-        'is_filter_active': is_filter_active
+        'is_filter_active': is_filter_active,
+        'min_price': min_price,
+        'max_price': max_price,
     }
     return render(request, 'home/home.html', context)
 

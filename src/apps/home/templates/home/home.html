@@ -27,17 +27,65 @@
 
 
 
- <form method="get" class="product-filter-form">
+
+<form method="get" class="product-filter-form">
     <div class="form-group">
-        <label for="id_price_min">حداقل قیمت:</label>
-        {{ products_filter.form.price_min }}
+        <label for="price_min_slider">حداقل قیمت: <span id="price_min_val">{{ request.GET.price_min|default:min_price }}</span> تومان</label>
+        <input type="range" id="price_min_slider" name="price_min" min="{{ min_price }}" max="{{ max_price }}" step="10000" value="{{ request.GET.price_min|default:min_price }}">
     </div>
     <div class="form-group">
-        <label for="id_price_max">حداکثر قیمت:</label>
-        {{ products_filter.form.price_max }}
+        <label for="price_max_slider">حداکثر قیمت: <span id="price_max_val">{{ request.GET.price_max|default:max_price }}</span> تومان</label>
+        <input type="range" id="price_max_slider" name="price_max" min="{{ min_price }}" max="{{ max_price }}" step="10000" value="{{ request.GET.price_max|default:max_price }}">
     </div>
     <button type="submit" class="btn filter-btn">اعمال فیلتر</button>
 </form>
+
+<main class="container mt-4">
+    <!-- بقیه قالب محصولات ... مثل قبل -->
+</main>
+
+<script>
+const priceMinSlider = document.getElementById('price_min_slider');
+const priceMaxSlider = document.getElementById('price_max_slider');
+const priceMinVal = document.getElementById('price_min_val');
+const priceMaxVal = document.getElementById('price_max_val');
+
+const minGap = 10000;  // حداقل فاصله بین min و max
+
+function syncSliders() {
+  let minVal = parseInt(priceMinSlider.value);
+  let maxVal = parseInt(priceMaxSlider.value);
+
+  // اگر حداقل از حد مجاز کمتر بود، اصلاحش کن
+  if (minVal > maxVal - minGap) {
+    minVal = maxVal - minGap;
+    priceMinSlider.value = minVal;
+  }
+
+  // اگر حداکثر از حد مجاز بیشتر بود، اصلاحش کن
+  if (maxVal < minVal + minGap) {
+    maxVal = minVal + minGap;
+    priceMaxSlider.value = maxVal;
+  }
+
+  priceMinVal.textContent = minVal.toLocaleString();
+  priceMaxVal.textContent = maxVal.toLocaleString();
+}
+
+// وقتی min تغییر کرد
+priceMinSlider.addEventListener('input', () => {
+  syncSliders();
+});
+
+// وقتی max تغییر کرد
+priceMaxSlider.addEventListener('input', () => {
+  syncSliders();
+});
+
+// بارگذاری اولیه صفحه (بروزرسانی نمایش مقدار)
+syncSliders();
+
+</script>
 
 
 

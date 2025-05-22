@@ -196,6 +196,115 @@ body {
     display: block;
 }
 
+/* استایل اسلایدر قیمت */
+
+.product-filter-form {
+    max-width: 400px;
+    margin: 1rem auto;
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    direction: ltr; /* برای نمایش اسلایدرها از چپ به راست */
+}
+
+.product-filter-form .form-group {
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    font-weight: 600;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.product-filter-form label {
+    width: 100%;
+    text-align: left;
+}
+
+.product-filter-form input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 6px;
+    background: #e0e0e0;
+    outline: none;
+    transition: background 0.3s ease;
+    cursor: pointer;
+}
+
+/* استایل Track اسلایدر */
+.product-filter-form input[type="range"]::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #0d6efd, #0d6efd) no-repeat;
+}
+
+.product-filter-form input[type="range"]:focus::-webkit-slider-runnable-track {
+    background: #0a58ca;
+}
+
+.product-filter-form input[type="range"]::-moz-range-track {
+    height: 8px;
+    border-radius: 6px;
+    background: #e0e0e0;
+}
+
+.product-filter-form input[type="range"]::-moz-range-progress {
+    background-color: #0d6efd;
+    height: 8px;
+    border-radius: 6px;
+}
+
+/* استایل Thumb اسلایدر */
+.product-filter-form input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #0d6efd;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 0 6px rgba(13,110,253,0.6);
+    margin-top: -6px; /* برای تراز با Track */
+    transition: background-color 0.3s ease;
+}
+
+.product-filter-form input[type="range"]:hover::-webkit-slider-thumb {
+    background: #084298;
+}
+
+.product-filter-form input[type="range"]:focus::-webkit-slider-thumb {
+    background: #084298;
+}
+
+/* موزیلا */
+.product-filter-form input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #0d6efd;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 6px rgba(13,110,253,0.6);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.product-filter-form input[type="range"]:hover::-moz-range-thumb {
+    background: #084298;
+}
+
+/* نمایش مقدار عددی کنار اسلایدرها */
+#price_min_val, #price_max_val {
+    font-weight: 700;
+    color: #0d6efd;
+    min-width: 60px;
+    display: inline-block;
+    text-align: left;
+}
 
 
 /* واکنش‌گرا */
