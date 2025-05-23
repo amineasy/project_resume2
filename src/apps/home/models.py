@@ -32,7 +32,7 @@ class ProductClass(models.Model):
 
 
 class Product(models.Model):
-    product_class = models.ForeignKey(ProductClass, on_delete=models.CASCADE)
+    product_class = models.ForeignKey(ProductClass, on_delete=models.CASCADE,related_name='products')
     title = models.CharField(max_length=100)
     price = models.IntegerField(blank=True,null=True)
     discount_price = models.IntegerField(blank=True,null=True)

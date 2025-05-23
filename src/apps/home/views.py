@@ -111,15 +111,57 @@ def most_viewed_products(request):
 
 
 def category_detail(request, id, slug=None):
+    # دریافت دسته‌بندی
     category = get_object_or_404(Category, id=id, slug=slug)
-    product_classes = ProductClass.objects.filter(category=category)
-    children = category.get_children()
+
+    # دریافت زیرمجموعه‌های دسته‌بندی
+    descendants = category.get_descendants()
+    categories = [category] + list(descendants)
+
+    # دریافت محصولات مرتبط با دسته‌بندی
+    product_classes = ProductClass.objects.filter(category__in=categories)
+    products_list = Product.objects.filter(product_class__in=product_classes).select_related('product_class')
+
+    # افزودن قیمت موثر (از ویژگی‌ها یا قیمت پایه)
+    first_attr_price = ProductAttribute.objects.filter(
+        product=OuterRef('pk')
+    ).values('price')[:1]
+
+    products_list = products_list.annotate(
+        effective_price=Coalesce(
+            Subquery(first_attr_price),
+            F('price')
+        )
+    )
+
+    # محاسبه حداقل و حداکثر قیمت
+    price_agg = products_list.aggregate(
+        min_price=Min('effective_price'),
+        max_price=Max('effective_price')
+    )
+    min_price = price_agg['min_price'] or 0
+    max_price = (price_agg['max_price'] or 1000000) + 100000
+
+    # اعمال فیلترها
+    products_filter = ProductFilter(request.GET, queryset=products_list)
+    filtered_products = products_filter.qs
+
+    # صفحه‌بندی
+    paginator = Paginator(filtered_products, 3)  # 3 محصول در هر صفحه
+    page = request.GET.get('page')
+    products = paginator.get_page(page)
+
+    # متغیرهای کنتکست
     context = {
         'category': category,
-        'product_classes': product_classes,
-        'children': children,
+        'products': products,
+        'products_filter': products_filter,
+        'min_price': min_price,
+        'max_price': max_price,
     }
+
     return render(request, 'home/category_detail.html', context)
+
 
 
 def product_class_detail(request, id, slug=None):

@@ -6,55 +6,138 @@
     <link rel="stylesheet" href="{% static 'home/css/category_detail.css' %}">
 {% endblock %}
 
+{% block title %}
+    {{ category.title }}
+{% endblock %}
+
 {% block body %}
-<header>
-    <h1>{{ category.title }}</h1>
-</header>
 
-<section>
-    <h2>اطلاعات دسته‌بندی</h2>
-    <p><strong>عنوان:</strong> {{ category.title }}</p>
+    <!-- Main Content -->
+    <main class="container mt-4">
+        <div class="row">
+            <!-- Sidebar Filters -->
+            <aside class="col-md-3 order-md-2">
+                <section class="filters">
+                    <h2 class="section-title">فیلتر محصولات</h2>
+                    <form method="get" class="filter-form">
+                        <div class="mb-3">
+                            <label class="form-label">محدوده قیمت (تومان)</label>
+                            <div id="price-slider"></div>
+                            <div class="row mt-2">
+                                <div class="col">
+                                    <input type="number" name="price_min" id="price_min" class="form-control"
+                                           placeholder="حداقل" value="{{ products_filter.form.price_min.value|default_if_none:'' }}">
+                                </div>
+                                <div class="col">
+                                    <input type="number" name="price_max" id="price_max" class="form-control"
+                                           placeholder="حداکثر" value="{{ products_filter.form.price_max.value|default_if_none:'' }}">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">اعمال فیلتر</button>
+                    </form>
+                </section>
+            </aside>
 
-    {% if category.description %}
-        <p><strong>توضیحات:</strong> {{ category.description }}</p>
-    {% endif %}
+            <!-- Product List -->
+            <div class="col-md-9 order-md-1">
+                <section class="products">
+                    <h2 class="section-title all-products">🛒 محصولات</h2>
+                    <div class="product-grid">
+                        {% for product in products %}
+                            <div class="product-card">
+                                <img src="{{ product.images.first.image.url|default:'/static/images/placeholder.jpg' }}"
+                                     alt="{{ product.title }}">
+                                <h3>{{ product.title }}</h3>
+                                {% with attr=product.attributes_related.first %}
+                                    {% if attr and attr.discount_price %}
+                                        <p class="original-price">{{ attr.price }} تومان</p>
+                                        <p class="discount-price">{{ attr.discount_price }}٪ تخفیف</p>
+                                        <p class="total-price">{{ attr.get_total_price }} تومان</p>
+                                    {% elif attr %}
+                                        <p class="total-price">{{ attr.get_total_price }} تومان</p>
+                                    {% else %}
+                                        <p class="total-price">{{ product.get_total_price|default:product.price }} تومان</p>
+                                    {% endif %}
+                                {% endwith %}
+                                <a href="{% url 'home:product_detail' product.id product.slug %}" class="btn">مشاهده</a>
+                            </div>
+                        {% empty %}
+                            <p>محصولی یافت نشد.</p>
+                        {% endfor %}
+                    </div>
 
-    <!-- نمایش تصویر دسته‌بندی -->
-    {% if category.images.all %}
-        <h3>تصویر دسته‌بندی</h3>
-        {% for category_image in category.images.all %}
-            {% if category_image.image %}
-                <img src="{{ category_image.image.url }}" alt="{{ category.title }}" class="category-image" style="max-width: 300px; height: auto;">
-            {% endif %}
-        {% endfor %}
-    {% else %}
-        <p>تصویری برای این دسته‌بندی وجود ندارد.</p>
-    {% endif %}
+                    <!-- Pagination -->
+                    {% if products.has_other_pages %}
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                {% if products.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link prev"
+                                           href="?page={{ products.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">« قبلی</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link prev">« قبلی</span>
+                                    </li>
+                                {% endif %}
 
-    <h3>آیتم‌های مرتبط</h3>
-    {% if children or product_classes %}
-        <ul>
-            {% for child in children %}
-                <li>
-                    <a href="{% url 'home:category_detail' id=child.id slug=child.slug %}">
-                        {{ child.title }}
-                    </a>
-                </li>
-            {% endfor %}
-            {% for product_class in product_classes %}
-                <li>
-                    <a href="{% url 'home:product_class_detail' id=product_class.id slug=product_class.slug %}">
-                        {{ product_class.title }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>هیچ آیتم مرتبطی برای این دسته‌بندی وجود ندارد.</p>
-    {% endif %}
-</section>
+                                {% for num in products.paginator.page_range %}
+                                    <li class="page-item {% if products.number == num %}active{% endif %}">
+                                        <a class="page-link"
+                                           href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                                    </li>
+                                {% endfor %}
 
-<div class="back-link">
-    <a href="{% url 'home:home' %}">بازگشت به صفحهٔ اصلی</a>
-</div>
+                                {% if products.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link next"
+                                           href="?page={{ products.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">بعدی »</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link next">بعدی »</span>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    {% endif %}
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Back Link -->
+    <div class="category-detail">
+    <a href="/" class="back-to-home">← بازگشت به صفحه اصلی</a>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready(function() {
+            const priceMin = {{ products_filter.form.price_min.value|default_if_none:"0"|default:"0" }};
+            const priceMax = {{ products_filter.form.price_max.value|default_if_none:"1000000"|default:"1000000" }};
+
+            $("#price-slider").slider({
+                range: true,
+                min: {{ min_price|default:"0" }},
+                max: {{ max_price|default:"1000000" }},
+                values: [priceMin, priceMax],
+                slide: function(event, ui) {
+                    $("#price_min").val(ui.values[0]);
+                    $("#price_max").val(ui.values[1]);
+                }
+            });
+
+            $("#price_min").on("input", function() {
+                $("#price-slider").slider("values", 0, $(this).val());
+            });
+            $("#price_max").on("input", function() {
+                $("#price-slider").slider("values", 1, $(this).val());
+            });
+        });
+    </script>
 {% endblock %}
